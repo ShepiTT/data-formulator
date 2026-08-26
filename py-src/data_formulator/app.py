@@ -116,7 +116,7 @@ app.config['CLI_ARGS'] = {
     'azure_blob_account_url': os.environ.get('AZURE_BLOB_ACCOUNT_URL', None),
     'azure_blob_container': os.environ.get('AZURE_BLOB_CONTAINER', 'data-formulator'),
     'available_languages': [
-        lang.strip() for lang in os.environ.get('AVAILABLE_LANGUAGES', 'en,zh').split(',') if lang.strip()
+        lang.strip() for lang in os.environ.get('AVAILABLE_LANGUAGES', 'zh').split(',') if lang.strip()
     ],
 }
 
@@ -317,14 +317,13 @@ def _register_blueprints():
     app.register_blueprint(knowledge_bp)
 
     # Auto-register all installed data loaders as DataConnector instances.
-    # We always run this so the connectors blueprint and the built-in
-    # 'sample_datasets' connector are available; the function itself
-    # honors disable_data_connectors by skipping admin YAML/env specs.
+    # We always run this so the connectors blueprint is available; the function
+    # itself honors disable_data_connectors by skipping admin YAML/env specs.
     with spinner("Loading data connectors"):
         from data_formulator.data_connector import register_data_connectors
         register_data_connectors(app)
     if app.config['CLI_ARGS'].get('disable_data_connectors'):
-        print("  External data connectors disabled (DISABLE_DATA_CONNECTORS=true) - sample datasets remain available", flush=True)
+        print("  External data connectors disabled (DISABLE_DATA_CONNECTORS=true) - file upload remains available", flush=True)
 
 
 def _safety_checks():
@@ -382,7 +381,7 @@ def get_app_config():
         "MAX_DISPLAY_ROWS": args['max_display_rows'],
         "DEV_MODE": args.get('dev', False),
         "WORKSPACE_BACKEND": workspace_backend,
-        "AVAILABLE_LANGUAGES": args.get('available_languages', ['en', 'zh']),
+        "AVAILABLE_LANGUAGES": args.get('available_languages', ['zh']),
     }
 
     from data_formulator.auth.identity import is_local_mode
@@ -535,7 +534,7 @@ def run_app():
         'azure_blob_account_url': args.azure_blob_account_url,
         'azure_blob_container': args.azure_blob_container,
         'available_languages': [
-            lang.strip() for lang in os.environ.get('AVAILABLE_LANGUAGES', 'en,zh').split(',') if lang.strip()
+            lang.strip() for lang in os.environ.get('AVAILABLE_LANGUAGES', 'zh').split(',') if lang.strip()
         ],
     }
     

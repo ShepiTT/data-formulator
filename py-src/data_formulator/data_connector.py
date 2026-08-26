@@ -279,9 +279,9 @@ def _visible_connector_items(identity: str | None) -> list[tuple[str, "DataConne
     newly created user connectors should use ``_user_connector_key``.
 
     When external connectors are disabled (browser-only / hosted mode), only
-    built-in admin connectors (e.g. ``sample_datasets``) are exposed —
-    previously-persisted user connectors on disk are hidden so the sidebar
-    stays clean and consistent with the disabled-add-connector UI.
+    built-in admin connectors are exposed — previously-persisted user
+    connectors on disk are hidden so the sidebar stays clean and consistent
+    with the disabled-add-connector UI.
     """
     from flask import current_app
 
@@ -2665,8 +2665,7 @@ def register_data_connectors(app: Flask) -> None:
     app.register_blueprint(connectors_bp)
 
     # 2. Load admin connectors from YAML/env (skipped when external connectors
-    #    are disabled — but the blueprint and built-in sample_datasets
-    #    connector below remain available so users can still load demo data).
+    #    are disabled — the blueprint itself stays registered).
     disabled = bool(app.config.get('CLI_ARGS', {}).get('disable_data_connectors'))
     admin_specs = [] if disabled else _load_admin_specs()
 
@@ -2701,19 +2700,3 @@ def register_data_connectors(app: Flask) -> None:
     for key, reason in DISABLED_LOADERS.items():
         if key not in DATA_CONNECTORS:
             logger.info("Source '%s' not available: %s", key, reason)
-
-    # 3. Always register the built-in sample datasets connector. This is
-    #    the one data source that remains available even in
-    #    ``--disable_database`` mode — it has no auth, no external
-    #    dependency beyond ``requests``, and gives users a zero-config
-    #    way to explore Data Formulator.
-    sample_loader_class = DATA_LOADERS.get("sample_datasets")
-    if sample_loader_class and "sample_datasets" not in DATA_CONNECTORS:
-        DATA_CONNECTORS["sample_datasets"] = DataConnector.from_loader(
-            sample_loader_class,
-            source_id="sample_datasets",
-            display_name="Example Datasets",
-            icon="dataset",
-        )
-        _ADMIN_CONNECTOR_IDS.add("sample_datasets")
-        logger.info("Registered built-in 'sample_datasets' connector")

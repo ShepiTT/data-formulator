@@ -21,7 +21,6 @@ import {
     Box,
     Tooltip,
     Button,
-    Divider,
     useTheme,
     useMediaQuery,
     alpha,
@@ -60,8 +59,6 @@ import { ModelSelectionButton } from './ModelSelectionDialog';
 import { UnifiedDataUploadDialog, UploadTabType, DataLoadMenu, ConnectorInstance } from './UnifiedDataUploadDialog';
 import { ReportView } from './ReportView';
 import { DataSourceSidebar } from './DataSourceSidebar';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import { ExampleSession, exampleSessions, ExampleSessionCard, fetchExampleSessions } from './ExampleSessions';
 import { useDataRefresh, useDerivedTableRefresh } from '../app/useDataRefresh';
 import { useTranslation } from 'react-i18next';
 import { fetchWithIdentity, getUrls, CONNECTOR_URLS } from '../app/utils';
@@ -144,14 +141,6 @@ export const DataFormulatorFC = ({ }) => {
         setPageConnectors([]);
         refreshPageConnectors();
     }, [refreshPageConnectors, identityKey]);
-
-    // ── Demo sessions (loaded from manifest, fallback to hardcoded) ─────
-    const [demoSessions, setDemoSessions] = useState<ExampleSession[]>(exampleSessions);
-    useEffect(() => {
-        fetchExampleSessions().then(sessions => {
-            if (sessions.length > 0) setDemoSessions(sessions);
-        });
-    }, []);
 
     // ── Workspace list (shown on landing page) ────────────────────
     const [savedWorkspaces, setSavedWorkspaces] = useState<WorkspaceSummary[]>([]);
@@ -389,49 +378,6 @@ export const DataFormulatorFC = ({ }) => {
             dispatch(dfActions.setActiveWorkspace({ id: generateSessionId(), displayName: 'Untitled Session' }));
         }
         dispatch(dfActions.queueAnalystTask({ text, images, attachments }));
-    };
-
-    const handleLoadExampleSession = async (session: ExampleSession) => {
-        dispatch(dfActions.setSessionLoading({ loading: true, label: t('messages.loadingExample', { title: session.title }) }));
-
-        dispatch(dfActions.addMessages({
-            timestamp: Date.now(),
-            type: 'info',
-            component: 'data formulator',
-            value: t('messages.loadingExample', { title: session.title }),
-        }));
-
-        try {
-            // Fetch the workspace zip
-            const res = await fetch(session.workspace);
-            if (!res.ok) throw new Error(`Failed to fetch ${session.workspace}`);
-            const blob = await res.blob();
-            const file = new File([blob], `${session.id}.zip`, { type: 'application/zip' });
-
-            // Import via the standard workspace import flow (parquet + state)
-            const wsId = generateSessionId();
-            // Set workspace ID first so fetchWithIdentity sends X-Workspace-Id header
-            dispatch(dfActions.setActiveWorkspace({ id: wsId, displayName: session.title }));
-            const state = await importWorkspace(file, wsId, session.title);
-            dispatch(dfActions.loadState({ ...state, activeWorkspace: { id: wsId, displayName: session.title } }));
-
-            dispatch(dfActions.addMessages({
-                timestamp: Date.now(),
-                type: 'success',
-                component: 'data formulator',
-                value: t('messages.loadSuccess', { title: session.title }),
-            }));
-        } catch (error: any) {
-            console.error('Error loading session:', error);
-            dispatch(dfActions.addMessages({
-                timestamp: Date.now(),
-                type: 'error',
-                component: 'data formulator',
-                value: t('messages.loadFailed', { title: session.title, error: error.message }),
-            }));
-        } finally {
-            dispatch(dfActions.setSessionLoading({ loading: false }));
-        }
     };
 
     useEffect(() => {
@@ -765,26 +711,6 @@ export const DataFormulatorFC = ({ }) => {
         </Box>
     );
 
-    let footer = <Box sx={{ color: 'text.secondary', display: 'flex', 
-            backgroundColor: 'rgba(255, 255, 255, 0.89)',
-            alignItems: 'center', justifyContent: 'center' }}>
-        <Button size="small" color="inherit" 
-            sx={{ textTransform: 'none'}} 
-            target="_blank" rel="noopener noreferrer" 
-            href="https://www.microsoft.com/en-us/privacy/privacystatement">{t('footer.privacyCookies')}</Button>
-        <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 1 }} />
-        <Button size="small" color="inherit" 
-            sx={{ textTransform: 'none'}} 
-            target="_blank" rel="noopener noreferrer" 
-            href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright">{t('footer.termsOfUse')}</Button>
-        <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 1 }} />
-        <Button size="small" color="inherit" 
-            sx={{ textTransform: 'none'}} 
-            target="_blank" rel="noopener noreferrer" 
-            href="https://github.com/microsoft/data-formulator/issues">{t('footer.contactUs')}</Button>
-        <Typography sx={{ display: 'inline', fontSize: textVar.sm, ml: 1 }}> @ {new Date().getFullYear()}</Typography>
-    </Box>
-
     let dataUploadRequestBox = <Box sx={{
             margin: '4px 4px 4px 8px', 
             background: `
@@ -820,92 +746,6 @@ export const DataFormulatorFC = ({ }) => {
                 {t('landing.tagline')}
             </Typography>
 
-            {/* Hosted-demo notice — borderless strip (it's prose, not a
-                button) placed before the Import Data section. The rocket
-                gets a quiet lift to add a touch of life. */}
-            {serverConfig.DISABLE_DATA_CONNECTORS && (
-                <Box
-                    sx={{
-                        mt: 2,
-                        mx: 'auto',
-                        maxWidth: 760,
-                        textAlign: 'left',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1.25,
-                        px: 0.5,
-                        py: 0.5,
-                        // Sparkle emoji twinkle. Modern browsers' filter:
-                        // drop-shadow honours the emoji's alpha channel,
-                        // so a small-radius shadow hugs the actual glyph
-                        // outline rather than a square box. We keep the
-                        // radius tight (1–2px) and the alpha modest so
-                        // the halo reads as a glow on the sparkle, not
-                        // a rectangle behind it.
-                        '& .df-sparkle': {
-                            display: 'inline-block',
-                            fontSize: textVar.xxl,
-                            lineHeight: 1,
-                            animation: 'df-sparkle-twinkle 3.6s ease-in-out infinite',
-                            transformOrigin: 'center',
-                        },
-                        '@keyframes df-sparkle-twinkle': {
-                            '0%, 100%': {
-                                transform: 'scale(1) rotate(0deg)',
-                                filter: 'drop-shadow(0 0 0 rgba(255,200,80,0))',
-                            },
-                            '40%': {
-                                transform: 'scale(1.2) rotate(20deg)',
-                                filter: 'drop-shadow(0 0 2px rgba(255,200,80,0.85)) drop-shadow(0 0 1px rgba(255,180,40,0.6))',
-                            },
-                            '60%': {
-                                transform: 'scale(1.05) rotate(-10deg)',
-                                filter: 'drop-shadow(0 0 1px rgba(255,200,80,0.5))',
-                            },
-                        },
-                    }}
-                >
-                    <Box
-                        component="span"
-                        className="df-sparkle"
-                        role="img"
-                        aria-label="sparkles"
-                        sx={{ flexShrink: 0 }}
-                    >
-                        ✨
-                    </Box>
-                    <Typography
-                        variant="caption"
-                        sx={{ color: 'text.secondary', fontSize: textVar.sm, lineHeight: 1.5, flex: 1 }}
-                    >
-                        {t('landing.demoBannerBody', {
-                            defaultValue:
-                                'This is a demo site! Try the examples below or upload files. To work with large datasets, connect to databases, link local folders, create persisted analysis sessions, use custom models, and manage users, check the ',
-                        })}
-                        <Link
-                            href="https://github.com/microsoft/data-formulator"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            underline="hover"
-                            sx={{
-                                color: 'primary.main',
-                                '&:hover': { color: 'primary.dark' },
-                            }}
-                        >
-                            <GitHubIcon
-                                sx={{
-                                    fontSize: '1em',
-                                    verticalAlign: '-0.15em',
-                                    mr: 0.4,
-                                }}
-                            />
-                            {t('landing.demoBannerCta', { defaultValue: 'installation guide' })}
-                        </Link>
-                        {t('landing.demoBannerSuffix', { defaultValue: '.' })}
-                    </Typography>
-                </Box>
-            )}
-
             <Box sx={{ mt: 3.5 }}>
                 <DataLoadMenu 
                     onSelectTab={(tab) => openUploadDialog(tab)}
@@ -928,30 +768,8 @@ export const DataFormulatorFC = ({ }) => {
             </Box>
             </Box>
 
-            {/* Demos — promoted ahead of "Your Sessions" on the hosted
-                demo, since first-time visitors won't have any sessions
-                yet and demos are the most engaging entry point. */}
-            <Box sx={{mt: 3}}>
-                <Typography sx={{ color: alpha(theme.palette.text.primary, 0.76), fontSize: textVar.md, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', textAlign: 'left', mb: 2 }}>
-                    {t('landing.demos')}
-                </Typography>
-                <Box sx={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                    gap: 1.5,
-                }}>
-                    {demoSessions.map((session) => (
-                        <ExampleSessionCard
-                            key={session.id}
-                            session={session}
-                            onClick={() => handleLoadExampleSession(session)}
-                        />
-                    ))}
-                </Box>
-            </Box>
-
             {/* ── Saved workspaces section ──────────────────────────── */}
-            <Box sx={{mt: 8}}>
+            <Box sx={{mt: 3}}>
                 {/* Section header — left-aligned label with the sort control
                     on the right, aligned to the card grid. */}
                 <Box sx={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', mb: 2 }}>
@@ -1101,7 +919,6 @@ export const DataFormulatorFC = ({ }) => {
                 </DialogActions>
             </Dialog>
         </Box>
-        {footer}
     </Box>;
     
     return (
@@ -1192,7 +1009,6 @@ export const DataFormulatorFC = ({ }) => {
                             </Typography>
                             <Typography color="text.secondary" variant="body1" sx={{mt: 2, width: 600}}>{t('landing.modelTip')}</Typography>
                         </Box>
-                        {footer}
                     </Box>
                 )}
             </DndProvider>

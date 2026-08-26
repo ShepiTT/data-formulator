@@ -1060,11 +1060,7 @@ def data_loading_chat():
     identity_id = get_identity_id()
     workspace = get_workspace(identity_id)
 
-    from data_formulator.example_datasets_config import EXAMPLE_DATASETS
-    available_datasets = [
-        {"name": ds["name"], "description": ds.get("description", "")}
-        for ds in EXAMPLE_DATASETS
-    ]
+    available_datasets = []
 
     language_instruction = get_language_instruction()
     knowledge_store = _get_knowledge_store(identity_id)

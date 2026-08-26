@@ -18,8 +18,7 @@ from data_formulator.data_operations import (
 _PROBE_BUDGET_KEY = "data_loading.probe_budget"
 _CONNECTORS_LISTED_KEY = "data_loading.connectors_listed"
 _CONNECTORS_DISABLED_NOTE = (
-    "External data connectors are disabled in this deployment. Use file upload "
-    "or built-in sample datasets instead."
+    "External data connectors are disabled in this deployment. Use file upload instead."
 )
 
 

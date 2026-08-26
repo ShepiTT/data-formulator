@@ -854,6 +854,7 @@ export const DataLoadMenu: React.FC<DataLoadMenuProps> = ({
                     the already-connected instances. The "add a connection"
                     actions live on their own row below so they read as
                     primary calls-to-action rather than list items. */}
+                {connectionSources.length > 0 && (
                 <Box sx={{
                     display: 'flex',
                     flexWrap: 'wrap',
@@ -879,6 +880,7 @@ export const DataLoadMenu: React.FC<DataLoadMenuProps> = ({
                         />
                     ))}
                 </Box>
+                )}
 
                 {/* Row 2 — add-a-source actions: same muted link family as the
                     connected sources, differentiated only by a subtle shaded

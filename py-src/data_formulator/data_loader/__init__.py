@@ -74,7 +74,6 @@ _LOADER_SPECS: list[tuple[str, str, str, str]] = [
     ("athena",     "data_formulator.data_loader.athena_data_loader",     "AthenaDataLoader",     "boto3"),
     ("superset",   "data_formulator.data_loader.superset_data_loader",   "SupersetLoader",       "requests"),
     ("local_folder", "data_formulator.data_loader.local_folder_data_loader", "LocalFolderDataLoader", "pyarrow"),
-    ("sample_datasets", "data_formulator.data_loader.sample_datasets_loader", "SampleDatasetsLoader", "requests"),
 ]
 
 # ---------------------------------------------------------------------------
@@ -88,13 +87,6 @@ PLUGIN_ERRORS: list[dict] = []         # rejected plugin attempts (override / du
 _BUILTIN_KEYS: frozenset[str] = frozenset(spec[0] for spec in _LOADER_SPECS)
 
 _BUILTIN_CATALOG_POLICIES: dict[str, CatalogCachePolicy] = {
-    "sample_datasets": CatalogCachePolicy(
-        listing_ttl_seconds=86_400,
-        metadata_ttl_seconds=86_400,
-        refresh_cost="free",
-        automatic_refresh="always",
-        automatic_refresh_kind="full",
-    ),
     "local_folder": CatalogCachePolicy(
         listing_ttl_seconds=0,
         metadata_ttl_seconds=0,

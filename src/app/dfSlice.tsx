@@ -347,7 +347,7 @@ const initialState: DataFormulatorState = {
         DISABLE_DATA_CONNECTORS: false,
         DISABLE_CUSTOM_MODELS: false,
         MAX_DISPLAY_ROWS: 10000,
-        AVAILABLE_LANGUAGES: ['en', 'zh'],
+        AVAILABLE_LANGUAGES: ['zh'],
         DEV_MODE: false,
         WORKSPACE_BACKEND: 'local',
     },

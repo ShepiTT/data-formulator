@@ -4,6 +4,7 @@
 import * as React from 'react';
 import { useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react';
 import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import {
     Box, Button, Chip, CircularProgress, IconButton,
@@ -112,6 +113,7 @@ const MarkdownContent = React.memo(({ content }: { content: string }) => {
     return (
         <Box sx={{ minWidth: 0, maxWidth: '100%', wordBreak: 'break-word' }}>
             <Markdown
+                remarkPlugins={[remarkGfm]}
                 components={{
                     // Block elements
                     p: ({ children }) => (

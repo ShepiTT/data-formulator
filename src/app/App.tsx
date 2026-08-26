@@ -41,7 +41,6 @@ import {
     Menu,
     MenuItem,
     TextField,
-    SvgIcon,
     IconButton,
     Select,
     FormControl,
@@ -70,15 +69,12 @@ import ViewSidebarIcon from '@mui/icons-material/ViewSidebar';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import {
     createBrowserRouter,
-    Link as RouterLink,
     Outlet,
     RouterProvider,
-    useLocation,
     useNavigate,
     useRouteError,
     useSearchParams,
 } from "react-router-dom";
-import { About } from '../views/About';
 import { MessageSnackbar } from '../views/MessageSnackbar';
 import { ChartRenderService } from '../views/ChartRenderService';
 import { DictTable } from '../components/ComponentType';
@@ -106,7 +102,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import UploadIcon from '@mui/icons-material/Upload';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import YouTubeIcon from '@mui/icons-material/YouTube';
 import PublicIcon from '@mui/icons-material/Public';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TerminalOutlinedIcon from '@mui/icons-material/TerminalOutlined';
@@ -115,13 +110,6 @@ import CheckIcon from '@mui/icons-material/Check';
 import { useTranslation } from 'react-i18next';
 import { syncVegaLocale } from '../i18n/vega-locale';
 import { buttonVar, iconVar, textVar } from './layout';
-
-// Discord Icon Component
-const DiscordIcon: FC<{ sx?: any }> = ({ sx }) => (
-    <SvgIcon sx={sx} viewBox="0 0 24 24">
-        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z" fill="currentColor"/>
-    </SvgIcon>
-);
 
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
     color: 'black',
@@ -133,39 +121,6 @@ const AppBar = styled(MuiAppBar)(({ theme }) => ({
         duration: theme.transitions.duration.leavingScreen,
     }),
 }));
-
-const TopNavButton: FC<{ to: string; label: string; selected: boolean }> = ({ to, label, selected }) => (
-    <Button
-        component={RouterLink}
-        to={to}
-        aria-current={selected ? 'page' : undefined}
-        onClick={(event) => {
-            if (selected) {
-                event.preventDefault();
-            }
-        }}
-        sx={{
-            textDecoration: 'none',
-            textTransform: 'none',
-            fontSize: textVar.md,
-            fontWeight: 400,
-            border: 'none',
-            borderRadius: 0,
-            px: 1.5,
-            py: 0.5,
-            minWidth: 'auto',
-            cursor: selected ? 'default' : 'pointer',
-            color: selected ? 'text.primary' : 'text.secondary',
-            backgroundColor: selected ? 'rgba(0, 0, 0, 0.08)' : 'transparent',
-            '&:hover': {
-                color: 'text.primary',
-                backgroundColor: selected ? 'rgba(0, 0, 0, 0.08)' : 'rgba(0, 0, 0, 0.04)',
-            },
-        }}
-    >
-        {label}
-    </Button>
-);
 
 declare module '@mui/material/styles' {
     interface PaletteColor {
@@ -293,74 +248,8 @@ const LanguageMenuItems: React.FC<{ onSelect: () => void }> = ({ onSelect }) => 
     );
 };
 
-/** Compact replacement for the About / App top-nav buttons. */
-const PageNavMenu: React.FC<{ isAboutPage: boolean }> = ({ isAboutPage }) => {
-    const { t } = useTranslation();
-    const navigate = useNavigate();
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const pages = [
-        { to: '/about', label: t('appBar.about'), selected: isAboutPage },
-        { to: '/app', label: t('appBar.app'), selected: !isAboutPage },
-    ];
-    const currentLabel = pages.find(page => page.selected)?.label ?? '';
-
-    return (
-        <>
-            <Button
-                color="inherit"
-                onClick={(event) => setAnchorEl(event.currentTarget)}
-                endIcon={<KeyboardArrowDownIcon sx={{ fontSize: iconVar.md, color: 'text.secondary' }} />}
-                aria-haspopup="menu"
-                sx={{
-                    textTransform: 'none',
-                    minWidth: 0,
-                    px: 0.75,
-                    gap: 0.25,
-                    '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' },
-                }}
-            >
-                <Typography noWrap component="h1" sx={{ fontSize: textVar.xl, fontWeight: 300, letterSpacing: '0.03em' }}>
-                    {toolName}
-                </Typography>
-                <Typography noWrap sx={{ fontSize: textVar.md, color: 'text.secondary' }}>
-                    {`: ${currentLabel}`}
-                </Typography>
-            </Button>
-            <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={() => setAnchorEl(null)}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-            >
-                {pages.map(page => (
-                    <MenuItem
-                        key={page.to}
-                        selected={page.selected}
-                        sx={menuItemSx}
-                        onClick={() => {
-                            setAnchorEl(null);
-                            if (!page.selected) navigate(page.to);
-                        }}
-                    >
-                        <ListItemIcon>
-                            {page.selected ? <CheckIcon fontSize="small" /> : null}
-                        </ListItemIcon>
-                        <ListItemText primaryTypographyProps={{ fontSize: textVar.md }}>
-                            {`${toolName}: ${page.label}`}
-                        </ListItemText>
-                    </MenuItem>
-                ))}
-            </Menu>
-        </>
-    );
-};
-
 const EXTERNAL_LINKS = {
     github: 'https://github.com/microsoft/data-formulator',
-    youtube: 'https://youtu.be/3ndlwt0Wi3c',
-    pip: 'https://pypi.org/project/data-formulator/',
-    discord: 'https://discord.gg/mYCZMQKYZb',
 };
 
 /**
@@ -380,6 +269,12 @@ const ToolbarOverflowMenu: React.FC<{
     const { t } = useTranslation();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const close = () => setAnchorEl(null);
+    // Language rows only render for multi-language deployments; the divider
+    // below them must share that condition or it shows up orphaned.
+    const availableLanguages = useSelector(
+        (state: DataFormulatorState) => state.serverConfig.AVAILABLE_LANGUAGES
+    );
+    const hasLanguageRows = showLanguages && (availableLanguages?.length ?? 0) > 1;
 
     return (
         <>
@@ -406,8 +301,8 @@ const ToolbarOverflowMenu: React.FC<{
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 slotProps={{ paper: { sx: { minWidth: 200 } } }}
             >
-                {showLanguages && <LanguageMenuItems onSelect={close} />}
-                {showLanguages && items.length > 0 && <Divider />}
+                {hasLanguageRows && <LanguageMenuItems onSelect={close} />}
+                {hasLanguageRows && items.length > 0 && <Divider />}
                 {items.map(item => (
                     <MenuItem
                         key={item.key}
@@ -1057,7 +952,6 @@ const AUTH_ERROR_MESSAGES: Record<string, string> = {
 const AppShell: FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { t } = useTranslation();
-    const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
     const viewMode = useSelector((state: DataFormulatorState) => state.viewMode);
     const tables = useSelector(dfSelectors.getAllTables);
@@ -1083,14 +977,11 @@ const AppShell: FC = () => {
     useWorkspaceAutoName();
     const generatedReports = useSelector((state: DataFormulatorState) => state.generatedReports);
 
-    const isAboutPage = location.pathname === '/about';
-    const isAppPage = !isAboutPage;
-
     // The desktop canvas (threads, encoding shelf, viz cards) genuinely needs
     // room, so the app shell floors content at MIN_SUPPORTED. Landing and phone
     // workspace views reflow instead; the media override below removes the
     // desktop floor when Thread and Canvas become alternate full-width views.
-    const isLandingView = isAppPage && !activeWorkspace;
+    const isLandingView = !activeWorkspace;
     const shellMinWidth = isLandingView ? 0 : `${MIN_SUPPORTED.width}px`;
 
     // Narrow toolbars fold their controls into menus instead of letting the
@@ -1100,7 +991,7 @@ const AppShell: FC = () => {
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [logsOpen, setLogsOpen] = useState(false);
     const exitSession = useExitSession();
-    const inSession = isAppPage && !!activeWorkspace;
+    const inSession = !!activeWorkspace;
 
     return (
         <Box sx={{
@@ -1131,10 +1022,6 @@ const AppShell: FC = () => {
                         <Box sx={{ width: 40, minWidth: 40, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                             <Box component="img" sx={{ height: 20 }} alt="" src={dfLogo} />
                         </Box>
-                        {isCompactToolbar ? (
-                            <PageNavMenu isAboutPage={isAboutPage} />
-                        ) : (
-                        <>
                         <Button sx={{
                             display: "flex", flexDirection: "row", textTransform: "none",
                             alignItems: 'stretch',
@@ -1149,28 +1036,10 @@ const AppShell: FC = () => {
                                 {toolName}
                             </Typography>
                         </Button>
-                        <Box
-                            sx={{
-                                ml: 2,
-                                height: '28px',
-                                my: 'auto',
-                                display: 'flex',
-                            }}
-                        >
-                            <TopNavButton to="/about" label={t('appBar.about')} selected={isAboutPage} />
-                            <TopNavButton to="/app" label={t('appBar.app')} selected={isAppPage} />
-                        </Box>
-                        </>
-                        )}
-                        {!isCompactToolbar && !activeWorkspace && (
-                            <Typography noWrap sx={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontWeight: 500, fontSize: '0.65rem', color: 'text.secondary', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-                                {t('appBar.microsoftResearch')}
-                            </Typography>
-                        )}
                         {/* Workspace name — session indicator/switcher. Centered
                             absolutely when there is room, otherwise it flows
                             between the nav menu and the trailing actions. */}
-                        {activeWorkspace && isAppPage && (
+                        {activeWorkspace && (
                             isCompactToolbar ? (
                                 <Box sx={{ flex: 1, minWidth: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', mx: 1 }}>
                                     <WorkspaceMenu />
@@ -1181,7 +1050,7 @@ const AppShell: FC = () => {
                                 </Box>
                             )
                         )}
-                        {isAppPage && isCompactToolbar && (
+                        {isCompactToolbar && (
                             <Box sx={{ display: 'flex', ml: 'auto', alignItems: 'center', gap: 0.5 }}>
                                 <ModelSelectionButton />
                                 <ConfigDialog open={settingsOpen} onOpenChange={setSettingsOpen} hideTrigger />
@@ -1218,7 +1087,7 @@ const AppShell: FC = () => {
                                 />
                             </Box>
                         )}
-                        {isAppPage && !isCompactToolbar && (
+                        {!isCompactToolbar && (
                             <Box sx={{ display: 'flex', ml: 'auto', alignItems: 'center', gap: 0.75 }}>
                                 <ModelSelectionButton />
                                 <Divider orientation="vertical" variant="middle" flexItem sx={{ my: 1 }} />
@@ -1250,121 +1119,6 @@ const AppShell: FC = () => {
                                         <ExitSessionButton />
                                     </>
                                 )}
-                            </Box>
-                        )}
-                        {isAboutPage && isCompactToolbar && (
-                            <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
-                                {serverConfig.IS_LOCAL_MODE && (
-                                    <LogViewerDialog open={logsOpen} onOpenChange={setLogsOpen} hideTrigger />
-                                )}
-                                <ToolbarOverflowMenu
-                                    items={[
-                                        ...(serverConfig.IS_LOCAL_MODE ? [{
-                                            key: 'logs',
-                                            label: t('logs.viewLogs', { defaultValue: 'View backend log' }),
-                                            icon: <TerminalOutlinedIcon fontSize="small" />,
-                                            onClick: () => setLogsOpen(true),
-                                        }] : []),
-                                        {
-                                            key: 'video',
-                                            label: t('appBar.watchVideo'),
-                                            icon: <YouTubeIcon fontSize="small" />,
-                                            href: EXTERNAL_LINKS.youtube,
-                                        },
-                                        {
-                                            key: 'github',
-                                            label: t('appBar.viewOnGitHub'),
-                                            icon: <GitHubIcon fontSize="small" />,
-                                            href: EXTERNAL_LINKS.github,
-                                        },
-                                        {
-                                            key: 'pip',
-                                            label: t('appBar.pipInstall'),
-                                            icon: <Box component="img" src="/pip-logo.svg" sx={{ width: 20, height: 20 }} alt="" />,
-                                            href: EXTERNAL_LINKS.pip,
-                                        },
-                                        {
-                                            key: 'discord',
-                                            label: t('appBar.joinDiscord'),
-                                            icon: <DiscordIcon sx={{ fontSize: 20 }} />,
-                                            href: EXTERNAL_LINKS.discord,
-                                        },
-                                    ]}
-                                />
-                            </Box>
-                        )}
-                        {isAboutPage && !isCompactToolbar && (
-                            <Box sx={{ ml: 'auto', display: 'flex', gap: 0.5 }}>
-                                <LanguageSwitcher />
-                                {serverConfig.IS_LOCAL_MODE && <LogViewerDialog />}
-                                <Tooltip title={t('appBar.watchVideo')}>
-                                    <IconButton
-                                        component="a"
-                                        href="https://youtu.be/3ndlwt0Wi3c"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        aria-label={t('appBar.watchVideo')}
-                                        sx={{
-                                            color: 'inherit',
-                                            '&:hover': {
-                                                backgroundColor: 'rgba(0, 0, 0, 0.04)'
-                                            }
-                                        }}
-                                    >
-                                        <YouTubeIcon fontSize="small" />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title={t('appBar.viewOnGitHub')}>
-                                    <IconButton
-                                        component="a"
-                                        href="https://github.com/microsoft/data-formulator"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        aria-label={t('appBar.viewOnGitHub')}
-                                        sx={{
-                                            color: 'inherit',
-                                            '&:hover': {
-                                                backgroundColor: 'rgba(0, 0, 0, 0.04)'
-                                            }
-                                        }}
-                                    >
-                                        <GitHubIcon fontSize="small" />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title={t('appBar.pipInstall')}>
-                                    <IconButton
-                                        component="a"
-                                        href="https://pypi.org/project/data-formulator/"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        aria-label={t('appBar.pipInstall')}
-                                        sx={{
-                                            color: 'inherit',
-                                            '&:hover': {
-                                                backgroundColor: 'rgba(0, 0, 0, 0.04)'
-                                            }
-                                        }}
-                                    >
-                                        <Box component="img" src="/pip-logo.svg" sx={{ width: 20, height: 20 }} alt="pip logo" />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title={t('appBar.joinDiscord')}>
-                                    <IconButton
-                                        component="a"
-                                        href="https://discord.gg/mYCZMQKYZb"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        aria-label={t('appBar.joinDiscord')}
-                                        sx={{
-                                            color: 'inherit',
-                                            '&:hover': {
-                                                backgroundColor: 'rgba(0, 0, 0, 0.04)'
-                                            }
-                                        }}
-                                    >
-                                        <DiscordIcon sx={{ fontSize: 20 }} />
-                                    </IconButton>
-                                </Tooltip>
                             </Box>
                         )}
                         <AuthButton />
@@ -1406,6 +1160,13 @@ export const AppFC: FC<AppFCProps> = function AppFC(appProps) {
             .then(({ data }) => {
                 dispatch(dfActions.setServerConfig(data));
                 setConfigLoaded(true);
+                // A cached language (or stale detector cache) may fall outside
+                // what this deployment offers; snap to the first available one
+                // so a hidden switcher can't strand the UI in that language.
+                const langs: string[] = data?.AVAILABLE_LANGUAGES ?? [];
+                if (langs.length > 0 && !langs.includes(i18n.language.split('-')[0])) {
+                    i18n.changeLanguage(langs[0]);
+                }
             });
     }, []);
 
@@ -1697,10 +1458,6 @@ export const AppFC: FC<AppFCProps> = function AppFC(appProps) {
                 {
                     path: "app",
                     element: <DataFormulatorFC />,
-                },
-                {
-                    path: "about",
-                    element: <About />,
                 },
                 {
                     path: "*",

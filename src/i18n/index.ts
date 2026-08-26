@@ -14,17 +14,25 @@ const resources = {
   zh: { translation: zh },
 };
 
+// Default to Chinese instead of following the browser locale, but keep a
+// language the user explicitly picked (cached by the detector below) so the
+// switcher still persists across reloads in multi-language deployments.
+const cachedLanguage =
+  typeof window !== 'undefined' ? window.localStorage.getItem('i18nextLng') : null;
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
+    lng: cachedLanguage || 'zh',
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false,
     },
     detection: {
-      order: ['localStorage', 'navigator'],
+      // navigator deliberately omitted: a fresh browser gets zh, not the OS locale.
+      order: ['localStorage'],
       caches: ['localStorage'],
     },
   });
