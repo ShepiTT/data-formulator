@@ -1,192 +1,110 @@
 <h1 align="center">
   <img src="./public/favicon.ico" alt="Data Formulator icon" width="28">&nbsp;
-  Data Formulator: AI-powered Data Visualization
+  Data Formulator 中文定制版
 </h1>
 
-
 <p align="center">
-  🪄 Explore data with visualizations, powered by AI agents.
+  🪄 用 AI Agent 驱动可视化探索数据 —— 中文界面 · 桌面版 · 支持国产大模型
 </p>
 
-<p align="center">
-  <a href="https://data-formulator.ai"><img src="https://img.shields.io/badge/🚀_Try_Online_Demo-data--formulator.ai-F59E0B?style=for-the-badge" alt="Try Online Demo"></a>
-  &nbsp;
-  <a href="#get-started"><img src="https://img.shields.io/badge/💻_Install_Locally-uvx_|_pip-3776AB?style=for-the-badge" alt="Install Locally"></a>
-</p>
+基于 [microsoft/data-formulator](https://github.com/microsoft/data-formulator)（MIT 许可）的个人定制版本。上传数据或连接数据库后，用自然语言对话即可完成数据加载、转换、可视化和报告生成。
 
-<p align="center">
-  <a href="https://pypi.org/project/data_formulator/"><img src="https://img.shields.io/pypi/v/data_formulator.svg?label=pypi%3A%20data_formulator" alt="PyPI"></a>&ensp;
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>&ensp;
-  <a href="https://www.youtube.com/watch?v=GfTE2FLyMrs"><img src="https://img.shields.io/badge/YouTube-white?logo=youtube&logoColor=%23FF0000" alt="YouTube"></a>&ensp;
-  <a href="https://github.com/microsoft/data-formulator/actions/workflows/python-build.yml"><img src="https://github.com/microsoft/data-formulator/actions/workflows/python-build.yml/badge.svg" alt="build"></a>&ensp;
-  <a href="https://discord.gg/mYCZMQKYZb"><img src="https://img.shields.io/badge/discord-chat-green?logo=discord" alt="Discord"></a>
-</p>
+## 本定制版的改动
 
-<!-- [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/microsoft/data-formulator?quickstart=1) -->
-<!-- 
-https://github.com/user-attachments/assets/8ca57b68-4d7a-42cb-bcce-43f8b1681ce2 -->
+相对上游版本：
 
+- **界面完全中文化**：默认且仅启用中文（`AVAILABLE_LANGUAGES=zh`），隐藏语言切换按钮
+- **移除微软品牌与演示内容**：顶栏"微软研究院"标识、About 页面、页脚微软链接、首页示例板块、内置 Example Datasets 数据源及全部演示资源均已删除，只保留实际可用的功能
+- **新增 Windows 桌面版**：PyInstaller + WebView2 打包，双击即用，无需打开浏览器
+- **修复**：聊天消息的 Markdown 表格渲染（remark-gfm）、中文 Windows 下的测试编码问题、若干界面细节
 
-## Why Data Formulator?
+保留的核心功能：文件上传（CSV/Excel/JSON/图片/文本）、本地文件夹、数据库连接器（MySQL、PostgreSQL、SQL Server、MongoDB、BigQuery、S3 等）、AI 数据加载助手、Data Thread 探索、30+ 图表类型、报告生成、会话持久化。
 
-Working with data is hard for two simple reasons:
+## 快速开始
 
-1. **Data lives everywhere.** Connecting agents to files, databases,
-   warehouses, and BI tools takes time. It is even harder when agents start
-   answering before the relationships between data sources are clear.
-2. **Questions evolve as you explore.** Each answer can lead to follow-up
-   questions, comparisons, and new directions. A long chat history makes it
-   hard to see where you are and how you got there.
+### 方式一：桌面版（推荐日常使用）
 
-Data Formulator provides one visual workspace for exploring and analyzing data:
+双击桌面的 **Data Formulator** 快捷方式，或直接运行：
 
-1. **Data connectors** give agents a common way to connect to different data
-   sources and maintains a data memory to remember the relationships between them.
-2. **Data Threads** let you branch into different questions, compare paths,
-   and use visualizations to discover deeper insights without losing context.
+```
+dist\Data Formulator\Data Formulator.exe
+```
 
-https://github.com/user-attachments/assets/8e4f8a08-6423-4227-a1f7-559e0126ce31
+- 原生窗口，无需浏览器；重复打开会唤起已有窗口而不是新开实例
+- 整个 `dist\Data Formulator\` 文件夹是一个整体，移动时需整体移动并重建快捷方式
 
-> [!TIP]
-> **Love the charts?** They're built on [**Flint**](https://microsoft.github.io/flint-chart/). It's an open-source visualization language that compiles compact chart specs into polished visualizations.
+修改代码后重新打包桌面版：
 
-## News 🔥🔥🔥
+```bash
+yarn build && uv run pyinstaller packaging/data_formulator_desktop.spec --noconfirm
+```
 
-[08-15-2026] **Data Formulator 0.8 beta 1** (`0.8.0b1`) introduces:
+> 重新打包前请先关闭正在运行的桌面版，否则 exe 被占用会导致打包失败。
 
-- **One unified flow:** load data, ask questions, review results, and branch in the Data Thread.
-- **More data sources:** use files, local folders, databases, and platforms such as Databricks.
-- **Better charts:** explore more Flint-powered charts, recommendations, themes, and styling tools.
+### 方式二：网页版（开发调试用）
 
-> Preview with `pip install --pre data_formulator==0.8.0b1` or `uvx data_formulator@0.8.0b1`.
-> Install the latest stable release (0.7) with `pip install data_formulator` or run instantly with `uvx data_formulator`.
+需要 Python ≥ 3.11、Node.js、yarn、[uv](https://docs.astral.sh/uv/)。
 
-See the [changelog](CHANGELOG.md) for release details.
+```bash
+# 首次安装依赖
+uv sync
+yarn install
 
-## Previous Updates
+# 终端 1：启动后端（Flask，端口 5567，代码热重载）
+uv run data_formulator --dev
 
-Here are milestones that lead to the current design:
-- **v0.7** (05-28-2026): Turn ANY data into insights in five steps — connect governed data sources, load via agents, explore with the unified `DataAgent` + Data Thread, refine 30+ chart types (semantic chart engine powered by [Flint](https://github.com/microsoft/flint-chart)) with a style-refinement agent, and share as reports. Plus persistent sessions & workspaces and a multilingual (English/Chinese) UI.
-- **v0.6** ([Demo](https://github.com/microsoft/data-formulator/releases/tag/0.6)): Real-time insights from live data — connect to URLs and databases with automatic refresh
-- **uv support**: Faster installation with [uv](https://docs.astral.sh/uv/) — `uvx data_formulator` or `uv pip install data_formulator`
-- **v0.5.1** ([Demo](https://github.com/microsoft/data-formulator/pull/200#issue-3635408217)): Community data loaders, US Map & Pie Chart, editable reports, snappier UI
-- **v0.5**: Vibe with your data, in control — agent mode, data extraction, reports
-- **v0.2.2** ([Demo](https://github.com/microsoft/data-formulator/pull/176)): Goal-driven exploration with agent recommendations and performance improvements
-- **v0.2.1.3/4** ([Readme](https://github.com/microsoft/data-formulator/tree/main/py-src/data_formulator/data_loader) | [Demo](https://github.com/microsoft/data-formulator/pull/155)): External data loaders (MySQL, PostgreSQL, MSSQL, Azure Data Explorer, S3, Azure Blob)
-- **v0.2** ([Demos](https://github.com/microsoft/data-formulator/releases/tag/0.2)): Large data support with DuckDB integration
-- **v0.1.7** ([Demos](https://github.com/microsoft/data-formulator/releases/tag/0.1.7)): Dataset anchoring for cleaner workflows
-- **v0.1.6** ([Demo](https://github.com/microsoft/data-formulator/releases/tag/0.1.6)): Multi-table support with automatic joins
-- **Model Support**: OpenAI, Azure, Ollama, Anthropic via [LiteLLM](https://github.com/BerriAI/litellm) ([feedback](https://github.com/microsoft/data-formulator/issues/49))
-- **Python Package**: Easy local installation ([try it](#get-started))
-- **Visualization Challenges**: Test your skills ([challenges](https://github.com/microsoft/data-formulator/issues/53))
-- **Data Extraction**: Parse data from images and text ([demo](https://github.com/microsoft/data-formulator/pull/31#issuecomment-2403652717))
-- **Initial Release**: [Blog](https://www.microsoft.com/en-us/research/blog/data-formulator-exploring-how-ai-can-help-analysts-create-rich-data-visualizations/) | [Video](https://youtu.be/3ndlwt0Wi3c)
+# 终端 2：启动前端（Vite，端口 5173，改代码即时生效）
+yarn start
+```
 
-## Overview
+打开 http://localhost:5173 （5173 被占用时 Vite 会自动换端口，以终端输出为准）。
 
-**Data Formulator** is a Microsoft Research project for data exploration with visualizations powered by AI agents. It combines *UI interactions* with *natural language* so analysts can communicate intent, branch into alternative analyses, and share results — starting from any data format (screenshot, text, CSV, or database).
+不做开发、只想跑起来用：`uv run data_formulator`，会自动打开 http://localhost:5567 。
 
-## Get Started
+## 配置大模型（DeepSeek / Qwen 等）
 
-Play with Data Formulator with one of the following options. 
+首次使用需配置模型。推荐编程和工具调用能力强的模型（如 `deepseek-v4-pro`、`qwen3-max` 等，以服务商控制台的最新模型 ID 为准）。
 
-### Desktop downloads
+**方式一：界面配置（即配即用）**
 
-CI builds self-contained Windows and macOS applications for pull requests and
-every update to `main`. Download the latest archives from the **Artifacts**
-section of the most recent
-[desktop builds workflow](https://github.com/microsoft/data-formulator/actions/workflows/desktop-build.yml).
-Workflow artifacts are retained for 30 days. Tagged builds are also attached
-as permanent downloads to the corresponding
-[GitHub Release](https://github.com/microsoft/data-formulator/releases).
+点击右上角"选择模型" → 添加模型：
 
-Extract the archive, then launch Data Formulator using the instructions for
-your operating system:
+| 字段 | DeepSeek | Qwen（阿里云百炼/DashScope） |
+|------|----------|------------------------------|
+| 提供商 | `openai` | `openai` |
+| 模型 | 如 `deepseek-v4-pro` | 如 `qwen3-max` |
+| API Key | 你的 DeepSeek Key | 你的 DashScope Key |
+| API Base | `https://api.deepseek.com/v1` | `https://dashscope.aliyuncs.com/compatible-mode/v1` |
 
-- **Windows:** Run `Data Formulator.exe`. If Microsoft Defender SmartScreen
-  appears, select **More info**, verify that you downloaded the archive from
-  this repository, and then select **Run anyway**.
-- **macOS:** Move `Data Formulator.app` to **Applications**. The first time you
-  open it, macOS may report that Apple could not verify the app. Open
-  **System Settings → Privacy & Security**, scroll to **Security**, and select
-  **Open Anyway** for Data Formulator. Confirm by selecting **Open** when
-  prompted.
+国产模型走 OpenAI 兼容协议，因此提供商选 `openai` 并填写对应的 API Base 即可。OpenAI、Azure、Anthropic、Gemini、Ollama 本地模型同样支持。
 
-> [!WARNING]
-> These are automated preview builds and are not currently code-signed or
-> notarized. Only bypass the operating-system warning when the archive was
-> downloaded directly from this repository's workflow artifacts or releases.
+**方式二：`.env` 文件（服务端全局配置，需重启后端）**
 
-- **Option 1: Install via uv (recommended)**
-  
-  [uv](https://docs.astral.sh/uv/) is an extremely fast Python package manager. If you have uv installed, you can run Data Formulator directly without any setup:
-  
-  ```bash
-  uvx data_formulator
-  ```
+```env
+DEEPSEEK_ENABLED=true
+DEEPSEEK_API_KEY=sk-xxx
+DEEPSEEK_MODELS=deepseek/deepseek-v4-pro
+```
 
-  Run `uvx data_formulator --help` to see all available options, such as custom port, sandboxing mode, and data storage location.
+更多可配置项见 [.env.template](.env.template)。
 
-- **Option 2: Install via pip**
-  
-  Use pip for installation (recommend: install it in a virtual environment).
-  
-  ```bash
-  pip install data_formulator # install
-  python -m data_formulator # run
-  ```
+**注意**：纯文本模型下"聊天传图"和"AI 看图检查图表"两个功能会静默降级（不报错但无效果），需要视觉能力请选用对应的多模态版本（如 Qwen-VL 系列）。
 
-  Data Formulator will be automatically opened in the browser at [http://localhost:5567](http://localhost:5567).
+## 数据存放位置
 
-- **Option 3: Run with Docker**
+网页版与桌面版**共用**数据目录 `C:\Users\<用户名>\.data_formulator\`（会话、上传的数据表、凭据保险库）。两边配置的模型和创建的会话互通；迁移或备份时带走该目录及 `.env` 即可。
 
-  ```bash
-  docker compose up --build
-  ```
+## 常用命令
 
-  Open [http://localhost:5567](http://localhost:5567) in your browser. To stop, press `Ctrl+C` or run `docker compose down`.
+```bash
+uv run pytest              # 后端测试
+yarn test                  # 前端测试
+npx tsc --noEmit           # TypeScript 类型检查
+yarn build                 # 构建生产版前端（输出到 py-src/data_formulator/dist）
+```
 
-- **Option 4: Working as developer**
-  
-  You can build Data Formulator locally and develop your own version. Check out details in [DEVELOPMENT.md](DEVELOPMENT.md).
+更多开发细节（沙箱、部署配置、认证等）见 [DEVELOPMENT.md](DEVELOPMENT.md)。
 
+## 许可与致谢
 
-## Using Data Formulator
-
-Start with the data you already have: upload CSV, TSV, Excel, JSON, screenshots,
-or text; connect to databases and data platforms; or ask the analyst to find and
-load the data you need. The analyst can discover sources, clarify your request,
-propose a loading plan, and let you review the data before adding it to the
-workspace.
-
-Continue the conversation in the **Data Thread**. Ask questions in
-natural language and follow the reasoning through explanations, tables, and
-editable charts in one history. Refine a result directly, branch from any
-earlier step to explore an alternative, or delegate the next investigation to
-the analyst. When the analysis is ready, compose the results into a report to
-share.
-
-https://github.com/user-attachments/assets/164aff58-9f93-4792-b8ed-9944578fbb72
-
-## Contributing
-
-This project welcomes contributions and suggestions. Most contributions require you to
-agree to a Contributor License Agreement (CLA) declaring that you have the right to,
-and actually do, grant us the rights to use your contribution. For details, visit
-https://cla.microsoft.com.
-
-When you submit a pull request, a CLA-bot will automatically determine whether you need
-to provide a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the
-instructions provided by the bot. You will only need to do this once across all repositories using our CLA.
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
-or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
-## Trademarks
-
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
-trademarks or logos is subject to and must follow 
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
-Any use of third-party trademarks or logos are subject to those third-party's policies.
+本项目基于 MIT 许可，源自微软研究院的 [Data Formulator](https://github.com/microsoft/data-formulator) 项目，原始版权声明见 [LICENSE](LICENSE)。图表渲染基于开源可视化语言 [Flint](https://microsoft.github.io/flint-chart/)。本定制版仅供个人学习与使用。
