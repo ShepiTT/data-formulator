@@ -4,7 +4,7 @@
 import os
 from typing import Optional, Dict, List
 
-BUILTIN_PROVIDERS = {'openai', 'azure', 'anthropic', 'gemini', 'ollama'}
+BUILTIN_PROVIDERS = {'openai', 'azure', 'anthropic', 'gemini', 'ollama', 'deepseek', 'qwen'}
 
 
 class ModelRegistry:
@@ -59,10 +59,16 @@ class ModelRegistry:
             if not (api_key or api_base) or not models_str:
                 continue
 
-            if provider in BUILTIN_PROVIDERS:
+            # An explicit {PROVIDER}_ENDPOINT always wins; otherwise built-in
+            # providers use their own endpoint and unknown ones fall back to
+            # the generic OpenAI-compatible call type.
+            explicit_endpoint = os.getenv(f"{env}_ENDPOINT", "").strip().lower()
+            if explicit_endpoint:
+                endpoint = explicit_endpoint
+            elif provider in BUILTIN_PROVIDERS:
                 endpoint = provider
             else:
-                endpoint = os.getenv(f"{env}_ENDPOINT", "openai").strip().lower()
+                endpoint = "openai"
 
             for model_name in models_str.split(","):
                 model_name = model_name.strip()

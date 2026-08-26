@@ -128,7 +128,7 @@ class TestPublicListingSecurity:
 class TestCustomProvider:
     @patch.dict(os.environ, SAMPLE_ENV, clear=True)
     def test_custom_provider_uses_explicit_endpoint(self):
-        """deepseek is not in BUILTIN_PROVIDERS, so it reads DEEPSEEK_ENDPOINT."""
+        """An explicit DEEPSEEK_ENDPOINT overrides the built-in default endpoint."""
         registry = ModelRegistry()
         config = registry.get_config("global-deepseek-deepseek-chat")
         assert config is not None

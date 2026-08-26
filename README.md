@@ -67,16 +67,14 @@ yarn start
 
 **方式一：界面配置（即配即用）**
 
-点击右上角"选择模型" → 添加模型：
+点击右上角"选择模型" → 添加模型，提供商直接选择：
 
-| 字段 | DeepSeek | Qwen（阿里云百炼/DashScope） |
-|------|----------|------------------------------|
-| 提供商 | `openai` | `openai` |
-| 模型 | 如 `deepseek-v4-pro` | 如 `qwen3-max` |
-| API Key | 你的 DeepSeek Key | 你的 DashScope Key |
-| API Base | `https://api.deepseek.com/v1` | `https://dashscope.aliyuncs.com/compatible-mode/v1` |
+- **DeepSeek**：填模型名（如 `deepseek-v4-pro`）和 API Key 即可，接口地址自动使用官方默认值
+- **通义千问 Qwen**：填模型名（如 `qwen3-max`）和 DashScope Key 即可，接口地址自动指向阿里云百炼兼容模式
+- **Ollama（本地模型）**：本机跑的开源模型，默认 `http://localhost:11434`
+- **自定义（OpenAI 兼容接口）**：其他任何兼容 OpenAI 协议的服务（Kimi、智谱、代理中转等），手动填 API Base
 
-国产模型走 OpenAI 兼容协议，因此提供商选 `openai` 并填写对应的 API Base 即可。OpenAI、Azure、Anthropic、Gemini、Ollama 本地模型同样支持。
+API Base 留空即用默认地址，也可手动填代理/中转地址覆盖。之前用"自定义"方式添加的模型配置继续有效。
 
 **方式二：`.env` 文件（服务端全局配置，需重启后端）**
 

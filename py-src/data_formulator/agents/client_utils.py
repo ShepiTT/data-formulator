@@ -237,6 +237,19 @@ class Client(object):
         if self.endpoint == "openai":
             if not model.startswith("openai/"):
                 self.model = f"openai/{model}"
+        elif self.endpoint == "deepseek":
+            # DeepSeek's OpenAI-compatible API; the default base URL is filled
+            # in here so users only need to supply model + key.
+            if "api_base" not in self.params:
+                self.params["api_base"] = "https://api.deepseek.com/v1"
+            if not model.startswith("openai/"):
+                self.model = f"openai/{model}"
+        elif self.endpoint == "qwen":
+            # Qwen via Alibaba Cloud DashScope's OpenAI-compatible mode.
+            if "api_base" not in self.params:
+                self.params["api_base"] = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+            if not model.startswith("openai/"):
+                self.model = f"openai/{model}"
         elif self.endpoint == "gemini":
             if model.startswith("gemini/"):
                 self.model = model
@@ -397,7 +410,10 @@ class Client(object):
         if tools is not None:
             call_kwargs["tools"] = tools
         resp = litellm.completion(**call_kwargs)
-        if is_ollama and tools:
+        # Models with weaker native tool-calling sometimes emit the call as
+        # JSON text instead of tool_calls; recover it for the providers where
+        # this is known to happen (only possible on buffered responses).
+        if tools and not effective_stream and self.endpoint in ("ollama", "deepseek", "qwen"):
             resp = _salvage_tool_calls_from_content(resp, tools)
         if is_ollama and stream:
             return _synthesize_stream(resp)

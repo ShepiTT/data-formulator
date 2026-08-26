@@ -76,6 +76,17 @@ const simpleHash = (str: string): string => {
     return Math.abs(hash).toString(36);
 };
 
+// Providers offered in the add-model form. DeepSeek / Qwen are first-class:
+// the backend fills in their OpenAI-compatible base URLs automatically, so
+// users only enter a model name and API key. “openai” doubles as the generic
+// OpenAI-compatible custom endpoint.
+const PROVIDER_OPTIONS: { value: string; label: string }[] = [
+    { value: 'deepseek', label: 'DeepSeek' },
+    { value: 'qwen', label: '通义千问 Qwen' },
+    { value: 'ollama', label: 'Ollama（本地模型）' },
+    { value: 'openai', label: '自定义（OpenAI 兼容接口）' },
+];
+
 const CONFIGURED_SECRET_MASK = '******';
 
 interface ModelSelectionButtonProps {
@@ -105,6 +116,8 @@ export const ModelSelectionButton: React.FC<ModelSelectionButtonProps> = ({ appe
     const [isEditingDetails, setIsEditingDetails] = useState(false);
     const [showKeys, setShowKeys] = useState<boolean>(false);
     const [providerModelOptions, setProviderModelOptions] = useState<{[key: string]: string[]}>({
+        'deepseek': [],
+        'qwen': [],
         'openai': [],
         'azure': [],
         'anthropic': [],
@@ -219,6 +232,8 @@ export const ModelSelectionButton: React.FC<ModelSelectionButtonProps> = ({ appe
     // This runs whenever globalModels updates (phase 1 instant list → phase 2 with statuses).
     useEffect(() => {
         const modelsByProvider: {[key: string]: string[]} = {
+            'deepseek': [],
+            'qwen': [],
             'openai': [],
             'azure': [],
             'anthropic': [],
@@ -436,8 +451,8 @@ export const ModelSelectionButton: React.FC<ModelSelectionButtonProps> = ({ appe
                     setNewModelDiagnostic(null);
                 }}
             >
-                {['openai', 'azure', 'ollama', 'anthropic', 'gemini'].map(provider => (
-                    <MenuItem key={provider} value={provider}>{provider}</MenuItem>
+                {PROVIDER_OPTIONS.map(({ value, label }) => (
+                    <MenuItem key={value} value={value}>{label}</MenuItem>
                 ))}
             </TextField>
 
@@ -448,7 +463,7 @@ export const ModelSelectionButton: React.FC<ModelSelectionButtonProps> = ({ appe
                 label={newEndpoint === 'azure' ? t('model.deploymentName') : t('model.model')}
                 value={newModel}
                 onChange={(event) => setNewModel(event.target.value)}
-                placeholder={t('model.modelPlaceholder')}
+                placeholder={newEndpoint === 'deepseek' ? '例如 deepseek-v4-pro' : newEndpoint === 'qwen' ? '例如 qwen3-max' : t('model.modelPlaceholder')}
                 autoComplete="off"
             />
 
@@ -520,7 +535,10 @@ export const ModelSelectionButton: React.FC<ModelSelectionButtonProps> = ({ appe
                     label={newEndpoint === 'azure' ? t('model.endpoint') : t('model.apiBase')}
                     value={newApiBase}
                     onChange={(event) => setNewApiBase(event.target.value)}
-                    placeholder={newEndpoint === 'ollama' ? 'http://localhost:11434' : undefined}
+                    placeholder={newEndpoint === 'ollama' ? 'http://localhost:11434'
+                        : newEndpoint === 'deepseek' ? '留空即默认 https://api.deepseek.com/v1'
+                        : newEndpoint === 'qwen' ? '留空即默认 https://dashscope.aliyuncs.com/compatible-mode/v1'
+                        : undefined}
                     autoComplete="off"
                 />
             )}
