@@ -219,7 +219,7 @@ ${JSON.stringify(modifiedSpec, null, 2)}
             result = result.replace(original, specReplacement);
         }
 
-        result += `\n\n---\n${i18n.t('report.createdWithAI')} [${i18n.t('app.name')}](https://github.com/microsoft/data-formulator)\n\n`;
+        result += `\n\n---\n${i18n.t('report.createdWithAI')} [${i18n.t('app.name')}](https://github.com/ShepiTT/data-formulator)\n\n`;
 
         // Prepend CSS styling based on report type
         const cssStyles = generateStyleCSS(reportStyle);

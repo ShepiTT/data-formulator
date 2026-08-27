@@ -153,7 +153,8 @@
       "failedToCreateConnector": "创建连接器失败",
       "failedToConnectFolder": "连接文件夹失败",
       "failedToOpenFolder": "打开文件夹失败",
-      "failedToDeleteConnector": "删除连接器失败"
+      "failedToDeleteConnector": "删除连接器失败",
+      "failedToRenameConnector": "重命名连接器失败"
     },
     "messages": {
       "connectedTo": "已连接到「{{name}}」",

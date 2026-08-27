@@ -69,7 +69,9 @@
       "previewFailed": "预览失败",
       "retryPreview": "重试",
       "reconnectAndRetry": "重新连接",
-      "fromSource": "来自"
+      "fromSource": "来自",
+      "scratchUnavailable": "未能准备好该表，无法加载。",
+      "unresolved": "未能定位该表——请让助手重新搜索后再试。"
     },
     "operation": {
       "title": "数据加载选项",
@@ -108,6 +110,7 @@
       "generateSyntheticExample": "生成一个包含 20 行的英国王朝数据集",
       "browseSamples": "浏览示例数据集",
       "browseSamplesExample": "有哪些示例数据集？"
-    }
+    },
+    "dropToAttach": "松开以附加文件"
   }
 }

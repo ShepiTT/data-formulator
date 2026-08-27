@@ -30,10 +30,10 @@ import { useTranslation } from 'react-i18next';
 import { iconVar, textVar } from '../app/layout';
 
 const UVX_CMD = 'uvx --prerelease=allow data-formulator';
-const REPO_URL = 'https://github.com/microsoft/data-formulator';
+const REPO_URL = 'https://github.com/ShepiTT/data-formulator';
 const PYPI_URL = 'https://pypi.org/project/data-formulator/';
 const UV_INSTALL_URL = 'https://docs.astral.sh/uv/getting-started/installation/';
-const INSTALL_GUIDE_URL = 'https://github.com/microsoft/data-formulator#get-started';
+const INSTALL_GUIDE_URL = 'https://github.com/ShepiTT/data-formulator#get-started';
 
 interface FeatureRow {
     icon: React.ReactNode;

@@ -250,7 +250,7 @@ const LanguageMenuItems: React.FC<{ onSelect: () => void }> = ({ onSelect }) => 
 };
 
 const EXTERNAL_LINKS = {
-    github: 'https://github.com/microsoft/data-formulator',
+    github: 'https://github.com/ShepiTT/data-formulator',
 };
 
 /**
@@ -1099,7 +1099,7 @@ const AppShell: FC = () => {
                                     <Tooltip title={t('appBar.viewOnGitHub')}>
                                         <IconButton
                                             component="a"
-                                            href="https://github.com/microsoft/data-formulator"
+                                            href="https://github.com/ShepiTT/data-formulator"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             size="small"

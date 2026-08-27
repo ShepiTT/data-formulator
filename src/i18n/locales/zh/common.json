@@ -30,7 +30,10 @@
     "success": "成功"
   },
   "common": {
-    "save": "保存"
+    "save": "保存",
+    "close": "关闭",
+    "on": "开",
+    "off": "关"
   },
   "appBar": {
     "session": "会话",
@@ -47,7 +50,11 @@
     "viewLogs": "查看后端日志",
     "refresh": "刷新",
     "download": "下载完整日志",
-    "empty": "日志文件为空。"
+    "empty": "日志文件为空。",
+    "inspectorTabs": "后端诊断",
+    "logTab": "后端日志",
+    "noActiveWorkspace": "没有可查看的活动会话。",
+    "savedStateTab": "已保存状态"
   },
   "session": {
     "exportSession": "导出会话",
@@ -329,7 +336,12 @@
     "localFilterPlaceholder": "按名称筛选…",
     "createConnector": "创建连接器",
     "deleteConnector": "删除",
-    "showingPreview": "预览仅显示前 {{count}} 行"
+    "showingPreview": "预览仅显示前 {{count}} 行",
+    "advancedSettings": "高级设置",
+    "findClusterPortal": "在 Azure 门户中查找你的集群",
+    "loadDatabasesFailed": "无法加载数据库列表，请手动输入名称。",
+    "loadingDatabases": "正在加载数据库…",
+    "noDatabasesFound": "未找到数据库，请手动输入名称。"
   },
   "connectorPreview": {
     "rowCount": "{{count}} 行",
@@ -503,7 +515,10 @@
       "summaryRows": "{{count, number}} 行",
       "summaryDistinct": "{{count, number}} 个不同值",
       "summaryBlanks": "{{count, number}} 个空值"
-    }
+    },
+    "downloadCsv": "下载 CSV",
+    "search": "搜索",
+    "searchPlaceholder": "搜索表格…"
   },
   "chatDialog": {
     "noHistory": "尚无对话记录",
@@ -634,7 +649,8 @@
     "threadExplorePrompt": "探索这份数据中有趣的模式和趋势",
     "explorationThreadDeriveDescription": "从 {{source}} 派生，指令：{{instruction}}",
     "explorationStepCodeComment": "# 探索步骤 {{step}}",
-    "maxIterationsReached": "已达到最大探索步数。"
+    "maxIterationsReached": "已达到最大探索步数。",
+    "attachContext": "附加上下文（图片或文件）"
   },
   "auth": {
     "loginTitle": "登录 Data Formulator",
@@ -886,7 +902,19 @@
     "timeMinutes": "{{count}}分钟",
     "timeHours": "{{count}}小时",
     "timeYesterday": "昨天",
-    "timeDays": "{{count}}天"
+    "timeDays": "{{count}}天",
+    "batchLoading": "正在加载 {{current}}/{{total}}：{{name}}",
+    "batchSessionName": "{{count}} 张表",
+    "clear": "清除",
+    "failedLoadTablesBatch": "{{count}} 张表加载失败：{{names}}",
+    "hoverColumns": "{{count}} 列",
+    "hoverRowCount": "{{count}} 行",
+    "loadInNewSession": "在新会话中加载",
+    "loadNTables": "加载 {{count}} 张表",
+    "loadedTablesBatch": "已加载 {{ok}}/{{total}} 张表。",
+    "pin": "保持侧栏展开",
+    "unpin": "点击外部时自动收起",
+    "selectedCount": "已选择 {{count}} 张表"
   },
   "knowledge": {
     "title": "Agent 知识",
@@ -977,5 +1005,22 @@
     "threadExpand": "展开线程",
     "threadCollapse": "收起线程",
     "replayPrompt": "在当前已加载的数据上复现以下分析流程。按顺序执行各步骤，并将其中的列引用调整为当前数据集中可用的列。结果不必完全一致——复现同样的整体分析即可。\n\n在做出较大假设之前，请先确认当前数据是否真的能支撑该流程。如果存在重大差异——例如缺少必需的字段或度量、数据粒度或结构差异很大、或某个步骤在当前数据上没有合理的对应方式——请暂停并向我确认如何继续（或简要说明不匹配之处及你建议的调整方案），而不要凭空猜测。对于细微差异（列被重命名、存在额外的列）可以直接静默调整。\n\n{{content}}"
+  },
+  "cancel": "取消",
+  "chatConnector": {
+    "connectTo": "连接 {{name}}",
+    "connectedChip": "已连接 {{name}}",
+    "connectedTo": "已连接\"{{name}}\"",
+    "detailType": "类型",
+    "loading": "正在加载连接器…",
+    "metaFailed": "无法加载连接器详情。",
+    "noDetails": "暂无更多详情。",
+    "tablesLabel": "张表",
+    "unavailable": "当前部署不支持连接器\"{{type}}\"。",
+    "connectedAgentTrigger": "我刚连接了一个新数据源\"{{name}}\"（类型：{{type}}）。请浏览它并给我一个简明而全面的概览：包含哪些数据库/模式、各自值得关注的表（每张表一句话说明内容和大致规模），以及你观察到的分组或主题。然后建议几个好的切入点，并问我想探索或加载什么。"
+  },
+  "mobile": {
+    "canvas": "画布",
+    "thread": "线程"
   }
 }
