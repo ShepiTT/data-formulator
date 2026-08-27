@@ -32,6 +32,7 @@ import {
 import { buildSpecForRestyle, buildDataContext, callRestyleAgent, makeVariant } from '../app/restyle';
 import { getDataTable } from './ChartUtils';
 import { iconVar, textVar } from '../app/layout';
+import { useTranslation } from 'react-i18next';
 
 export interface ChartVariantStripProps {
     chartId: string;
@@ -58,29 +59,32 @@ const THEME_CHOICES = [
 
 const themeIconUrl = (svg: string) => `data:image/svg+xml,${encodeURIComponent(svg)}`;
 
+// label/description are i18n keys resolved at render time; instruction stays
+// English because it is the prompt sent to the restyle agent.
 const ANNOTATE_ACTIONS: QuickAction[] = [
     {
         key: 'annotate-peak',
-        label: 'highest point',
-        description: 'Mark the highest value',
+        label: 'chart.annotatePeak',
+        description: 'chart.annotatePeakDesc',
         instruction: 'Annotate the highest value in the chart with a label.',
     },
     {
         key: 'avg-line',
-        label: 'average line',
-        description: 'Add a reference line at the mean',
+        label: 'chart.avgLine',
+        description: 'chart.avgLineDesc',
         instruction: 'Add a reference line at the average value.',
     },
     {
         key: 'data-labels',
-        label: 'data labels',
-        description: 'Label each data point with its value',
+        label: 'chart.dataLabels',
+        description: 'chart.dataLabelsDesc',
         instruction: 'Add data labels showing the value of each mark.',
     },
 ];
 
 export const ChartVariantStrip: FC<ChartVariantStripProps> = function ({ chartId, onThemePreview, onThemePreviewEnd }) {
     const theme = useTheme();
+    const { t } = useTranslation();
     const dispatch = useDispatch<AppDispatch>();
 
     const tables = useSelector(dfSelectors.getAllTables);
@@ -370,7 +374,7 @@ export const ChartVariantStrip: FC<ChartVariantStripProps> = function ({ chartId
             minHeight: 34,
         }}>
             <Divider orientation="vertical" flexItem sx={{ my: 0.5, mr: 1, borderColor: alpha(theme.palette.text.primary, 0.12) }} />
-            <Tooltip title={`Theme: ${selectedTheme?.label ?? 'Default'}`}>
+            <Tooltip title={t('chart.themeTooltip', { label: selectedTheme?.id === undefined ? t('chart.flintDefault') : (selectedTheme?.label ?? '') })}>
                 <Box
                     component="button"
                     type="button"
@@ -507,7 +511,7 @@ export const ChartVariantStrip: FC<ChartVariantStripProps> = function ({ chartId
                     </Box>
                 </Box>
             )}
-            <Tooltip title="Restyle chart…">
+            <Tooltip title={t('chart.restyleChart')}>
                 <IconButton
                     color="primary"
                     size="small"
@@ -529,11 +533,11 @@ export const ChartVariantStrip: FC<ChartVariantStripProps> = function ({ chartId
                 slotProps={{ paper: { sx: { width: 340, p: 2, borderRadius: 2 } } }}
             >
                 <Typography sx={{ fontSize: textVar.xs, fontWeight: 600, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 0.5, mb: 1.25 }}>
-                    Annotate
+                    {t('chart.annotateHeading')}
                 </Typography>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', rowGap: 0.5, columnGap: 0.5, mb: 1.5 }}>
                         {ANNOTATE_ACTIONS.map(action => (
-                            <Tooltip key={action.key} title={action.description}>
+                            <Tooltip key={action.key} title={t(action.description)}>
                                 <Box
                                     component="span"
                                     onClick={() => { if (!isRestyling) handleRestyleSubmit(action.instruction); }}
@@ -556,14 +560,14 @@ export const ChartVariantStrip: FC<ChartVariantStripProps> = function ({ chartId
                                         },
                                     }}
                                 >
-                                    {action.label}
+                                    {t(action.label)}
                                 </Box>
                             </Tooltip>
                         ))}
                 </Box>
                 <Divider sx={{ my: 1.5 }} />
                 <Typography sx={{ fontSize: textVar.xs, fontWeight: 600, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 0.5, mb: 1 }}>
-                    Design yourself
+                    {t('chart.designYourselfHeading')}
                 </Typography>
                 <Card
                     variant='outlined'
@@ -594,7 +598,7 @@ export const ChartVariantStrip: FC<ChartVariantStripProps> = function ({ chartId
                             "& .MuiInput-underline:hover:not(.Mui-disabled):before": { borderBottom: 'none' },
                             "& .MuiInput-underline:after": { borderBottom: 'none' },
                         }}
-                        placeholder="Describe a style, e.g. “use a muted pastel palette”"
+                        placeholder={t('chart.stylePlaceholder')}
                         value={restylePrompt}
                         disabled={isRestyling}
                         onChange={(e) => setRestylePrompt(e.target.value)}
@@ -611,7 +615,7 @@ export const ChartVariantStrip: FC<ChartVariantStripProps> = function ({ chartId
                         maxRows={5}
                     />
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-                        <Tooltip title="Restyle">
+                        <Tooltip title={t('chart.restyleShort')}>
                             <span>
                                 <IconButton
                                     size="small"

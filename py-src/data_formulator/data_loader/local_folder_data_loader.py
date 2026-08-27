@@ -35,7 +35,7 @@ SUPPORTED_EXTENSIONS = frozenset({
 class LocalFolderDataLoader(ExternalDataLoader):
     """Browse and import data files from a local directory."""
 
-    DISPLAY_NAME = "Local Folder"
+    DISPLAY_NAME = "本地文件夹"
 
     @staticmethod
     def list_params() -> list[dict[str, Any]]:

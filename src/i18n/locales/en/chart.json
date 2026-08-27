@@ -276,6 +276,19 @@
     },
     "maximizeTable": "Maximize table",
     "quickChart": "Quick chart",
-    "restoreTable": "Restore"
+    "restoreTable": "Restore",
+    "annotateHeading": "Annotate",
+    "designYourselfHeading": "Design yourself",
+    "annotatePeak": "highest point",
+    "annotatePeakDesc": "Mark the highest value",
+    "avgLine": "average line",
+    "avgLineDesc": "Add a reference line at the mean",
+    "dataLabels": "data labels",
+    "dataLabelsDesc": "Label each data point with its value",
+    "stylePlaceholder": "Describe a style, e.g. “use a muted pastel palette”",
+    "themeTooltip": "Theme: {{label}}",
+    "flintDefault": "Flint default",
+    "restyleChart": "Restyle chart…",
+    "restyleShort": "Restyle"
   }
 }

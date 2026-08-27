@@ -276,6 +276,19 @@
     },
     "maximizeTable": "放大表格",
     "quickChart": "快捷图表",
-    "restoreTable": "还原"
+    "restoreTable": "还原",
+    "annotateHeading": "标注",
+    "designYourselfHeading": "自定义样式",
+    "annotatePeak": "最高点",
+    "annotatePeakDesc": "标注图中最大值",
+    "avgLine": "平均线",
+    "avgLineDesc": "添加均值参考线",
+    "dataLabels": "数据标签",
+    "dataLabelsDesc": "为每个数据点标注数值",
+    "stylePlaceholder": "描述想要的样式，例如\"使用柔和的马卡龙色系\"",
+    "themeTooltip": "主题：{{label}}",
+    "flintDefault": "Flint 默认",
+    "restyleChart": "图表样式…",
+    "restyleShort": "调整样式"
   }
 }
