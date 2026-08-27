@@ -2871,15 +2871,24 @@ export const DataThread: FC<{sx?: SxProps, centered?: boolean, denseColumns?: bo
     const denseColumnGap = 4;
     const densePanelInset = 4;
     const useDenseColumns = denseColumns;
+    // Solo (centered) mode has the whole panel to itself — no canvas fighting
+    // for width — so cards relax to a substantially wider measure. Canvas mode
+    // keeps the reference width, preserving the two-columns-beside-a-chart
+    // contract on mid-size laptops (see layout.test.ts).
+    const SOLO_CARD_WIDTH = 340;
+    const soloMode = centered && !useDenseColumns;
+    const effectiveThreadTokens = soloMode
+        ? { ...threadTokens, thread: { ...threadTokens.thread, cardWidth: SOLO_CARD_WIDTH } }
+        : threadTokens;
     const columnWidth = useDenseColumns
         ? `calc((100% - ${densePanelInset + denseColumnGap + 8}px) / 2)`
-        : threadTokens.thread.cardWidth;
-    const cardWidth = useDenseColumns ? '100%' : threadTokens.thread.cardWidth;
-    const columnGap = useDenseColumns ? denseColumnGap : threadTokens.thread.cardGap;
-    const panelInset = useDenseColumns ? densePanelInset : threadTokens.thread.panelPadding / 2;
+        : effectiveThreadTokens.thread.cardWidth;
+    const cardWidth = useDenseColumns ? '100%' : effectiveThreadTokens.thread.cardWidth;
+    const columnGap = useDenseColumns ? denseColumnGap : effectiveThreadTokens.thread.cardGap;
+    const panelInset = useDenseColumns ? densePanelInset : effectiveThreadTokens.thread.panelPadding / 2;
     const fittableColumns = useDenseColumns
         ? 2
-        : fittableThreadColumnsFor(containerWidth, threadTokens);
+        : fittableThreadColumnsFor(containerWidth, effectiveThreadTokens);
 
     // Adaptively split long derivation chains so the resulting segments fill
     // the available columns evenly.  See `computeSplitExtraLeaves` for the
@@ -3262,6 +3271,9 @@ export const DataThread: FC<{sx?: SxProps, centered?: boolean, denseColumns?: bo
             direction: 'ltr',
             height: 'calc(100% - 16px)',
             width: panelWidth,
+            // Whisper-quiet wash so the white cards read as raised surfaces
+            // and empty regions read as intentional negative space.
+            backgroundColor: 'rgba(0, 0, 0, 0.015)',
         }}>
             <Box sx={{
                 display: 'flex',
