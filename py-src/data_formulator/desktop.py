@@ -336,6 +336,12 @@ def run_desktop() -> None:
             webview.start()
     finally:
         coordinator.close()
+    # The window is closed. Daemon threads (Flask server, CLR message pump)
+    # can keep the dying process alive for several seconds, during which a
+    # relaunch would signal this corpse and silently exit — the user's click
+    # appears to do nothing. Exit hard so the coordination and app ports are
+    # released immediately.
+    os._exit(0)
 
 
 if __name__ == "__main__":
