@@ -33,11 +33,17 @@ dist\Data Formulator\Data Formulator.exe
 - 原生窗口，无需浏览器；重复打开会唤起已有窗口而不是新开实例
 - 整个 `dist\Data Formulator\` 文件夹是一个整体，移动时需整体移动并重建快捷方式
 
-修改代码后重新打包桌面版：
+**分发给其他人：安装包**
+
+`dist\installer\DataFormulator-Setup-<版本>.exe` 是标准的 Windows 安装程序——发给别人双击即装：中文安装向导、自动创建开始菜单/桌面快捷方式、附带卸载程序；目标电脑缺少 WebView2 运行时会自动安装。默认按当前用户安装（不需要管理员权限），向导里也可选择为所有用户安装。卸载时保留用户数据（`%USERPROFILE%\.data_formulator`）。
+
+修改代码后重新打包桌面版和安装包：
 
 ```bash
-yarn build && uv run pyinstaller packaging/data_formulator_desktop.spec --noconfirm
+yarn build && uv run pyinstaller packaging/data_formulator_desktop.spec --noconfirm && ISCC packaging/installer.iss
 ```
+
+（`ISCC` 是 [Inno Setup 6](https://jrsoftware.org/isinfo.php) 的编译器，通过 `winget install JRSoftware.InnoSetup` 安装；只重打绿色版可省略最后一步。）
 
 > 重新打包前请先关闭正在运行的桌面版，否则 exe 被占用会导致打包失败。
 
