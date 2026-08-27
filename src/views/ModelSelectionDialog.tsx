@@ -204,6 +204,31 @@ export const ModelSelectionButton: React.FC<ModelSelectionButtonProps> = ({ appe
         }).catch(() => undefined);
     };
 
+    // Fire-and-forget sync to the server-side user-model store, so the same
+    // configuration shows up in every frontend (web and desktop) and survives
+    // browser-storage resets. Failures degrade to browser-local behavior.
+    const syncModelToServer = (model: ModelConfig) => {
+        apiRequest(getUrls().USER_MODELS, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model }),
+        }).catch(() => undefined);
+    };
+    const syncModelDeleteToServer = (id: string) => {
+        apiRequest(getUrls().USER_MODELS_DELETE, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id }),
+        }).catch(() => undefined);
+    };
+    const syncModelSelectToServer = (id: string) => {
+        apiRequest(getUrls().USER_MODELS_SELECT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id }),
+        }).catch(() => undefined);
+    };
+
     const handleAzureCliLogin = async () => {
         setAzureCliLoginPending(true);
         try {
@@ -333,6 +358,7 @@ export const ModelSelectionButton: React.FC<ModelSelectionButtonProps> = ({ appe
                 body: JSON.stringify({ model }),
             });
             rememberModelEndpoint(model);
+            syncModelToServer(model);
             dispatch(updatingUserModel ? dfActions.updateModel(model) : dfActions.addModel(model));
             updateModelStatus(model, 'ok', data.message || "");
             setTempSelectedModelId(id);
@@ -649,6 +675,7 @@ export const ModelSelectionButton: React.FC<ModelSelectionButtonProps> = ({ appe
                                                 aria-label={t('model.removeModel')}
                                                 onClick={(event) => {
                                                     event.stopPropagation();
+                                                    syncModelDeleteToServer(model.id);
                                                     dispatch(dfActions.removeModel(model.id));
                                                     if (detailModelId === model.id) {
                                                         const fallback = allModels.find(candidate => candidate.id !== model.id);
@@ -824,6 +851,7 @@ export const ModelSelectionButton: React.FC<ModelSelectionButtonProps> = ({ appe
                             variant="contained"
                             disabled={modelNotReady}
                             onClick={() => {
+                                if (tempSelectedModelId) syncModelSelectToServer(tempSelectedModelId);
                                 dispatch(dfActions.selectModel(tempSelectedModelId));
                                 setModelDialogOpen(false);
                             }}

@@ -32,7 +32,12 @@ def list_credentials():
         return json_ok({"sources": []})
 
     identity = get_identity_id()
-    sources = vault.list_sources(identity)
+    # LLM model entries (managed via /api/user-models) share the vault
+    # namespace but do not belong in the connector-credentials UI.
+    sources = [
+        s for s in vault.list_sources(identity)
+        if not s.startswith("llm")
+    ]
     return json_ok({"sources": sources})
 
 

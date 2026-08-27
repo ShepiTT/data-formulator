@@ -113,6 +113,9 @@ export interface ModelConfig {
     auth_mode?: 'key' | 'azure_identity';
     /** True for models configured server-side via .env. Their credentials never leave the server. */
     is_global?: boolean;
+    /** Server hint: an api_key is stored in the vault for this model (the key
+     *  itself never reaches the frontend; the backend fills it per request). */
+    has_api_key?: boolean;
 }
 
 
@@ -819,6 +822,50 @@ export const fetchGlobalModelList = createAsyncThunk(
     "dataFormulatorSlice/fetchGlobalModelList",
     async () => {
         const { data } = await apiRequest(getUrls().LIST_GLOBAL_MODELS);
+        return data;
+    }
+);
+
+/** Load the caller's models from the server-side user-model store and migrate
+ *  any browser-local models (from the pre-store era) up to it. The store keeps
+ *  configs per identity with keys in the encrypted vault, so every frontend
+ *  (web and desktop) of the same user sees the same models. */
+export const fetchUserModels = createAsyncThunk(
+    "dataFormulatorSlice/fetchUserModels",
+    async (_: void, { getState }) => {
+        const { data } = await apiRequest(getUrls().USER_MODELS);
+        if (!data?.available) return data;
+
+        // One-time migration: push browser-local models the server doesn't
+        // know about (their api_key only exists in this browser's storage).
+        const serverIds = new Set((data.models ?? []).map((m: ModelConfig) => m.id));
+        const localModels = (getState() as DataFormulatorState).models ?? [];
+        const toMigrate = localModels.filter(m => m.id && !serverIds.has(m.id));
+        for (const model of toMigrate) {
+            try {
+                await apiRequest(getUrls().USER_MODELS, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model }),
+                });
+                data.models.push({ ...model, api_key: undefined, has_api_key: Boolean(model.api_key) });
+            } catch (e) {
+                console.warn('model migration failed for', model.id, e);
+            }
+        }
+
+        // Seed the server-side selection from this browser's choice, so other
+        // frontends (e.g. the desktop app) open ready to use.
+        const localSelected = (getState() as DataFormulatorState).selectedModelId;
+        if (!data.selected_id && localSelected
+            && data.models.some((m: ModelConfig) => m.id === localSelected)) {
+            apiRequest(getUrls().USER_MODELS_SELECT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: localSelected }),
+            }).catch(() => undefined);
+            data.selected_id = localSelected;
+        }
         return data;
     }
 );
@@ -2407,6 +2454,29 @@ export const dataFormulatorSlice = createSlice({
                     component: 'model list',
                     value: i18n.t('messages.globalModelListFailed'),
                 });
+            }
+        })
+        .addCase(fetchUserModels.fulfilled, (state, action) => {
+            const payload = action.payload;
+            if (!payload?.available) return;
+            const serverModels: ModelConfig[] = payload.models ?? [];
+
+            // Server is the source of truth; keep a browser-local api_key when
+            // we still have one (saves a vault round-trip on agent calls).
+            state.models = serverModels.map(sm => {
+                const local = state.models.find(m => m.id === sm.id);
+                return local?.api_key ? { ...sm, api_key: local.api_key } : sm;
+            });
+
+            // Adopt the server-side selection when this browser has none, so a
+            // fresh frontend (e.g. the desktop app) starts ready to use.
+            const selectedId: string | null = payload.selected_id ?? null;
+            const validSelection = state.selectedModelId != undefined
+                && (state.models.some(m => m.id === state.selectedModelId)
+                    || state.globalModels.some(m => m.id === state.selectedModelId));
+            if (!validSelection && selectedId && state.models.some(m => m.id === selectedId)) {
+                state.selectedModelId = selectedId;
+                try { localStorage.setItem('df_selected_model', selectedId); } catch { /* */ }
             }
         })
         .addCase(fetchAvailableModels.fulfilled, (state, action) => {

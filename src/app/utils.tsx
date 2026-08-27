@@ -72,6 +72,10 @@ export function getUrls() {
         LOGS_TAIL: `/api/logs/tail`,
         LOGS_DOWNLOAD: `/api/logs/download`,
         MODEL_ENDPOINTS: `/api/model-endpoints`,
+        // Server-side per-identity model store (keys held in the vault)
+        USER_MODELS: `/api/user-models`,
+        USER_MODELS_DELETE: `/api/user-models/delete`,
+        USER_MODELS_SELECT: `/api/user-models/select`,
 
         // Session management
         SESSION_SAVE: `/api/sessions/save`,

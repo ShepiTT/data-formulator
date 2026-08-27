@@ -219,6 +219,26 @@ def get_client(model_config, trusted=False):
         if isinstance(model_config[key], str):
             model_config[key] = model_config[key].strip()
 
+    # Server-side key resolution: frontends that load model configs from the
+    # user-model store never receive the api_key, so agent requests arrive
+    # without one. Fill it from the caller's own vault entry. This only adds
+    # the secret — the request's api_base still goes through the allowlist
+    # below, so a stored key cannot be exfiltrated to an attacker-chosen host
+    # beyond what the deployment already permits.
+    if not trusted and not model_config.get("api_key") and model_config.get("id"):
+        try:
+            from data_formulator.auth.vault import get_credential_vault
+            from data_formulator.auth.identity import get_identity_id
+            from data_formulator.routes.user_models import model_vault_key
+
+            vault = get_credential_vault()
+            if vault:
+                stored = vault.retrieve(get_identity_id(), model_vault_key(str(model_config["id"])))
+                if stored and stored.get("api_key"):
+                    model_config["api_key"] = stored["api_key"]
+        except Exception:
+            logger.debug("Vault api_key lookup failed", exc_info=True)
+
     # Validate caller-provided api_base against the allowlist (SSRF
     # protection).  Registry configs are exempt because their api_base is set
     # by the operator's env vars, not by a request.

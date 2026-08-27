@@ -10,6 +10,7 @@ import {
     dfActions,
     dfSelectors,
     fetchGlobalModelList,
+    fetchUserModels,
     DEFAULT_ROW_LIMIT,
 } from './dfSlice'
 import { getBrowserId, generateUUID } from './identity';
@@ -1298,6 +1299,9 @@ export const AppFC: FC<AppFCProps> = function AppFC(appProps) {
         // Users can verify connectivity via the "Test" button in the model dialog,
         // or errors will surface naturally when a model is first used.
         dispatch(fetchGlobalModelList());
+        // Load the user's own models from the server-side store (and migrate
+        // browser-local ones up), so web and desktop share one configuration.
+        dispatch(fetchUserModels());
     }, []);
 
     let theme = createTheme({
