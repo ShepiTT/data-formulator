@@ -878,11 +878,15 @@ const DataSourceSidebarPanel: React.FC<{
                 ...prev,
                 [connectorId]: errorLoadable(e, prev[connectorId]?.data ?? { tree: [], fetchedAt: Date.now() }),
             }));
-            dispatch(dfActions.addMessages({
-                timestamp: Date.now(), type: 'warning',
-                component: 'data-source-sidebar',
-                value: e?.apiError?.message || t('dataLoading.syncPartial'),
-            }));
+            if (isConnectorGone(e)) {
+                fetchConnectors();
+            } else {
+                dispatch(dfActions.addMessages({
+                    timestamp: Date.now(), type: 'warning',
+                    component: 'data-source-sidebar',
+                    value: e?.apiError?.message || t('dataLoading.syncPartial'),
+                }));
+            }
         } finally {
             cancelled = true;
             window.clearInterval(progressTimer);
@@ -895,6 +899,12 @@ const DataSourceSidebarPanel: React.FC<{
             fetchingRef.current.delete(fetchKey);
         }
     }, [dispatch, t]);
+
+    // A connector that disappeared server-side (deleted in another window,
+    // team share revoked, ...) is not a user-facing fault: drop it from local
+    // state and re-sync the list instead of surfacing an error toast.
+    const isConnectorGone = (e: any) =>
+        typeof e?.apiError?.message === 'string' && e.apiError.message.includes('Connector not found');
 
     const syncCatalogMetadata = useCallback(async (connectorId: string) => {
         const syncKey = `sync:${connectorId}`;
@@ -938,11 +948,15 @@ const DataSourceSidebarPanel: React.FC<{
                 ...prev,
                 [connectorId]: errorLoadable(e, { tree: [], fetchedAt: Date.now() }),
             }));
-            dispatch(dfActions.addMessages({
-                timestamp: Date.now(), type: 'warning',
-                component: 'data-source-sidebar',
-                value: e?.apiError?.message || t('dataLoading.syncPartial'),
-            }));
+            if (isConnectorGone(e)) {
+                fetchConnectors();
+            } else {
+                dispatch(dfActions.addMessages({
+                    timestamp: Date.now(), type: 'warning',
+                    component: 'data-source-sidebar',
+                    value: e?.apiError?.message || t('dataLoading.syncPartial'),
+                }));
+            }
         } finally {
             fetchingRef.current.delete(syncKey);
         }
