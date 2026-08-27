@@ -83,6 +83,42 @@ def _available_port() -> int:
         return server_socket.getsockname()[1]
 
 
+# Browser storage (localStorage / IndexedDB — where model configs and UI state
+# live) is keyed by origin, i.e. host:port. A random port per launch would give
+# the app a fresh, empty origin every time, so the desktop app uses a stable
+# default port and only falls back to a random one if it is taken.
+_DEFAULT_APP_PORT = int(os.environ.get("DF_DESKTOP_PORT", "15567"))
+
+
+def _resolve_app_port() -> int:
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            probe.bind(("127.0.0.1", _DEFAULT_APP_PORT))
+        return _DEFAULT_APP_PORT
+    except OSError:
+        print(
+            f"Port {_DEFAULT_APP_PORT} is taken; falling back to a random port "
+            "(browser-stored settings from previous runs will not be visible)."
+        )
+        return _available_port()
+
+
+def _webview_storage_dir() -> str | None:
+    """Persistent WebView2 user-data directory, so origin-keyed browser storage
+    survives restarts. Mirrors app.py's home resolution with plain os.path —
+    importing the backend here would pull pandas/pyarrow before the loading
+    window appears."""
+    home = os.environ.get("DATA_FORMULATOR_HOME") or os.path.join(
+        os.path.expanduser("~"), ".data_formulator"
+    )
+    storage = os.path.join(home, "webview")
+    try:
+        os.makedirs(storage, exist_ok=True)
+        return storage
+    except OSError:
+        return None
+
+
 def _wait_until_ready(url: str, timeout: float = 30) -> None:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
@@ -249,7 +285,7 @@ def run_desktop() -> None:
             daemon=True,
         ).start()
 
-        port = _available_port()
+        port = _resolve_app_port()
         url = f"http://127.0.0.1:{port}?desktop=1"
 
         # Show a lightweight loading page first so the user gets feedback while
@@ -288,7 +324,13 @@ def run_desktop() -> None:
             window.load_url(url)
 
         threading.Thread(target=_start_backend, daemon=True).start()
-        webview.start()
+        storage_dir = _webview_storage_dir()
+        if storage_dir:
+            # Persistent profile: keeps localStorage/IndexedDB (model configs,
+            # selected model, UI preferences) across launches.
+            webview.start(private_mode=False, storage_path=storage_dir)
+        else:
+            webview.start()
     finally:
         coordinator.close()
 
