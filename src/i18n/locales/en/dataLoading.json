@@ -69,7 +69,9 @@
       "previewFailed": "Preview failed",
       "retryPreview": "Retry",
       "reconnectAndRetry": "Reconnect",
-      "fromSource": "from"
+      "fromSource": "from",
+      "scratchUnavailable": "Couldn't prepare this table for loading.",
+      "unresolved": "Couldn't resolve this table — the agent should rerun search and try again."
     },
     "operation": {
       "title": "Data loading options",
@@ -108,6 +110,7 @@
       "generateSyntheticExample": "Generate a UK dynasty dataset with 20 rows",
       "browseSamples": "Browse sample datasets",
       "browseSamplesExample": "What sample datasets are available?"
-    }
+    },
+    "dropToAttach": "Drop file to attach"
   }
 }

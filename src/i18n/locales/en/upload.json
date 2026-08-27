@@ -153,7 +153,8 @@
       "failedToCreateConnector": "Failed to create connector",
       "failedToConnectFolder": "Failed to connect folder",
       "failedToOpenFolder": "Failed to open folder",
-      "failedToDeleteConnector": "Failed to delete connector"
+      "failedToDeleteConnector": "Failed to delete connector",
+      "failedToRenameConnector": "Failed to rename connector"
     },
     "messages": {
       "connectedTo": "Connected to \"{{name}}\"",

@@ -30,7 +30,10 @@
     "success": "Success"
   },
   "common": {
-    "save": "Save"
+    "save": "Save",
+    "close": "Close",
+    "on": "On",
+    "off": "Off"
   },
   "appBar": {
     "session": "Session",
@@ -47,7 +50,11 @@
     "viewLogs": "View backend log",
     "refresh": "Refresh",
     "download": "Download full log",
-    "empty": "Log file is empty."
+    "empty": "Log file is empty.",
+    "inspectorTabs": "Backend diagnostics",
+    "logTab": "Backend log",
+    "noActiveWorkspace": "No active workspace to inspect.",
+    "savedStateTab": "Saved state"
   },
   "session": {
     "exportSession": "export session",
@@ -329,7 +336,12 @@
     "localFilterPlaceholder": "Filter by name...",
     "createConnector": "Create Connector",
     "deleteConnector": "Delete",
-    "showingPreview": "Preview shows first {{count}} rows"
+    "showingPreview": "Preview shows first {{count}} rows",
+    "advancedSettings": "Advanced settings",
+    "findClusterPortal": "Find your cluster in the Azure portal",
+    "loadDatabasesFailed": "Could not load databases; enter the name manually.",
+    "loadingDatabases": "Loading databases…",
+    "noDatabasesFound": "No databases found; enter a name manually."
   },
   "connectorPreview": {
     "rowCount": "{{count}} rows",
@@ -579,7 +591,8 @@
     "threadExplorePrompt": "Explore interesting patterns and trends in this data",
     "explorationThreadDeriveDescription": "Derive from {{source}} with instruction: {{instruction}}",
     "explorationStepCodeComment": "# Exploration step {{step}}",
-    "maxIterationsReached": "Reached the maximum number of exploration steps."
+    "maxIterationsReached": "Reached the maximum number of exploration steps.",
+    "attachContext": "Attach context (image or file)"
   },
   "dataGrid": {
     "loading": "Loading ...",
@@ -622,7 +635,10 @@
       "summaryRows": "{{count, number}} rows",
       "summaryDistinct": "{{count, number}} distinct",
       "summaryBlanks": "{{count, number}} blanks"
-    }
+    },
+    "downloadCsv": "Download CSV",
+    "search": "Search",
+    "searchPlaceholder": "Search table…"
   },
   "chatDialog": {
     "noHistory": "There is no conversation history yet",
@@ -886,7 +902,19 @@
     "timeMinutes": "{{count}}m",
     "timeHours": "{{count}}h",
     "timeYesterday": "yesterday",
-    "timeDays": "{{count}}d"
+    "timeDays": "{{count}}d",
+    "batchLoading": "Loading {{current}}/{{total}}: {{name}}",
+    "batchSessionName": "{{count}} table(s)",
+    "clear": "Clear",
+    "failedLoadTablesBatch": "Failed to load {{count}} table(s): {{names}}",
+    "hoverColumns": "{{count}} column(s)",
+    "hoverRowCount": "{{count}} row(s)",
+    "loadInNewSession": "Load in new session",
+    "loadNTables": "Load {{count}} table(s)",
+    "loadedTablesBatch": "Loaded {{ok}} of {{total}} tables.",
+    "pin": "Keep sidebar open",
+    "unpin": "Close when clicking outside",
+    "selectedCount": "{{count}} table(s) selected"
   },
   "knowledge": {
     "title": "Agent Knowledge",
@@ -977,5 +1005,22 @@
     "threadExpand": "Expand thread",
     "threadCollapse": "Collapse thread",
     "replayPrompt": "Reproduce the following analysis workflow on the currently loaded data. Follow the steps in order, adapting any column references to the columns available in the current dataset. It's fine if the result isn't identical — reproduce the same overall analysis.\n\nBefore making large assumptions, check whether the current data can actually support the workflow. If there is a major discrepancy — e.g. a required field or measure is missing, the granularity or shape is very different, or a step has no sensible equivalent on this data — pause and ask me to confirm how to proceed (or briefly explain the mismatch and your proposed adaptation) instead of guessing. Minor differences (renamed columns, extra columns) can be adapted silently.\n\n{{content}}"
+  },
+  "cancel": "Cancel",
+  "chatConnector": {
+    "connectTo": "Connect to {{name}}",
+    "connectedChip": "Connected to {{name}}",
+    "connectedTo": "Connected to \"{{name}}\"",
+    "detailType": "type",
+    "loading": "Loading connector…",
+    "metaFailed": "Could not load connector details.",
+    "noDetails": "No additional details.",
+    "tablesLabel": "tables",
+    "unavailable": "Connector \"{{type}}\" is not available in this deployment.",
+    "connectedAgentTrigger": "I just connected a new data source \"{{name}}\" (type: {{type}}). Browse it and give me a concise but comprehensive overview: what databases/schemas it contains, the notable tables in each (with a one-line hint of what they hold and their approximate size where known), and any groupings or themes you notice. Then suggest a couple of good starting points and ask what I would like to explore or load."
+  },
+  "mobile": {
+    "canvas": "Canvas",
+    "thread": "Thread"
   }
 }
