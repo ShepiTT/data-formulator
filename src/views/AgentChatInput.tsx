@@ -344,7 +344,7 @@ export const AgentChatInput: React.FC<AgentChatInputProps> = ({
                 sx={{
                     position: 'relative',
                     border: `1px solid ${borderColor.divider}`,
-                    borderRadius: '12px',
+                    borderRadius: '16px',
                     bgcolor: theme.palette.background.paper,
                     boxShadow: '0 1px 6px rgba(32, 33, 36, 0.10), 0 1px 2px rgba(32, 33, 36, 0.06)',
                     transition: transition.fast,

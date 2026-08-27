@@ -362,7 +362,7 @@ const WorkspacePanel: FC<{
                                         top: 0,
                                         bottom: isLastTable ? 'calc(100% - 10px)' : 0,
                                         width: '1px',
-                                        backgroundColor: 'rgba(0,0,0,0.1)',
+                                        backgroundColor: 'rgba(0,0,0,0.08)',
                                     },
                                     '&::after': {
                                         content: '""',
@@ -371,7 +371,7 @@ const WorkspacePanel: FC<{
                                         top: '10px',
                                         width: '8px',
                                         height: '1px',
-                                        backgroundColor: 'rgba(0,0,0,0.1)',
+                                        backgroundColor: 'rgba(0,0,0,0.08)',
                                     }
                                 }}
                             >
@@ -443,7 +443,7 @@ const WorkspacePanel: FC<{
                                                             top: 0,
                                                             bottom: isLast ? '50%' : 0,
                                                             width: '1px',
-                                                            backgroundColor: 'rgba(0,0,0,0.1)',
+                                                            backgroundColor: 'rgba(0,0,0,0.08)',
                                                         },
                                                         '&::after': {
                                                             content: '""',
@@ -452,7 +452,7 @@ const WorkspacePanel: FC<{
                                                             top: '50%',
                                                             width: '8px',
                                                             height: '1px',
-                                                            backgroundColor: 'rgba(0,0,0,0.1)',
+                                                            backgroundColor: 'rgba(0,0,0,0.08)',
                                                         }
                                                     }}
                                                 >
@@ -1679,9 +1679,9 @@ let SingleThreadGroupView: FC<{
     // fixed-size background pattern keeps every dash the same regardless of
     // the segment's height — the line reads as one continuous stroke even
     // when split across multiple boxes.
-    const DASH_COLOR = 'rgba(0,0,0,0.22)';
+    const DASH_COLOR = 'rgba(0,0,0,0.16)';
     const dashedLineSx = {
-        width: '2px',
+        width: '1.5px',
         backgroundImage: `linear-gradient(to bottom, ${DASH_COLOR} 50%, transparent 50%)`,
         backgroundSize: '2px 6px',
         backgroundRepeat: 'repeat-y',
@@ -1801,13 +1801,13 @@ let SingleThreadGroupView: FC<{
         const isTable = item.type === 'table' || item.type === 'leaf-table' || item.type === 'used-table';
         const isChart = item.type === 'chart';
         const isMerge = item.type === 'merge';
-        const dashedColor = item.highlighted ? alpha(theme.palette.primary.main, 0.6) : 'rgba(0,0,0,0.1)';
-        const dashedWidth = '2px';
+        const dashedColor = item.highlighted ? alpha(theme.palette.primary.main, 0.6) : 'rgba(0,0,0,0.07)';
+        const dashedWidth = '1.5px';
         const dashedStyle = 'solid';
         // Bottom connector uses unhighlighted style if next item isn't highlighted
         const bottomHighlighted = item.highlighted && nextHighlighted;
-        const bottomDashedColor = bottomHighlighted ? alpha(theme.palette.primary.main, 0.6) : 'rgba(0,0,0,0.1)';
-        const bottomDashedWidth = '2px';
+        const bottomDashedColor = bottomHighlighted ? alpha(theme.palette.primary.main, 0.6) : 'rgba(0,0,0,0.07)';
+        const bottomDashedWidth = '1.5px';
         const bottomDashedStyle = 'solid';
         // No dimming or background — rely on timeline color + card border for highlighting
         const rowHighlightSx = {};
@@ -1956,8 +1956,8 @@ let SingleThreadGroupView: FC<{
                     {(index > 0 || !isSplitThread) && (() => {
                         // When connecting to the header (index 0, label visible), match the header's highlight state
                         const useHeader = index === 0 && !isSplitThread;
-                        const topColor = useHeader ? (headerHL ? alpha(theme.palette.primary.main, 0.6) : 'rgba(0,0,0,0.1)') : dashedColor;
-                        const topWidth = '2px';
+                        const topColor = useHeader ? (headerHL ? alpha(theme.palette.primary.main, 0.6) : 'rgba(0,0,0,0.07)') : dashedColor;
+                        const topWidth = '1.5px';
                         const topStyle = 'solid';
                         return <Box sx={{ width: 0, flex: '1 1 0', minHeight: 6, borderLeft: `${topWidth} ${topStyle} ${topColor}` }} />;
                     })()}
@@ -2014,8 +2014,8 @@ let SingleThreadGroupView: FC<{
             {!isSplitThread && (() => {
                 const hlColor = theme.palette.primary.main;
                 const nhColor = 'rgba(0,0,0,0.35)';
-                const connColor = headerHL ? alpha(theme.palette.primary.main, 0.6) : 'rgba(0,0,0,0.1)';
-                const connWidth = '2px';
+                const connColor = headerHL ? alpha(theme.palette.primary.main, 0.6) : 'rgba(0,0,0,0.07)';
+                const connWidth = '1.5px';
                 const connStyle = 'solid';
                 return (
                 <Box sx={{ display: 'flex', flexDirection: 'row' }}>

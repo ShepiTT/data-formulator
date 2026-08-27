@@ -67,7 +67,7 @@ export const SHELF_VISIBLE_LIMIT = 6;
 const GUTTER_WIDTH = 14;          // DataThread's TIMELINE_WIDTH
 const GUTTER_GAP = '4px';         // DataThread's TIMELINE_GAP
 const CARD_INSET_RIGHT = '14px';  // DataThread's CARD_CONTENT_PR
-const RAIL_LINE = '2px solid rgba(0,0,0,0.1)';
+const RAIL_LINE = '1.5px solid rgba(0,0,0,0.07)';
 // Left offset that puts the 2px rail on the gutter's centre line, matching a
 // width-0 centred line in DataThread's timeline column.
 const RAIL_OFFSET = '6px';

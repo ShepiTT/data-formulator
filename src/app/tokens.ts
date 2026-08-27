@@ -19,7 +19,7 @@ export const borderColor = {
 
     /** 0.10 — inner components: cards, chips, inputs, thumbnails
      *  DataThreadCards table card, EncodingShelfCard tab divider */
-    component: 'rgba(0, 0, 0, 0.10)',
+    component: 'rgba(0, 0, 0, 0.08)',
 
     /** 0.12 — outer containers: panels, dialogs, popovers, drop zones
      *  DataThread popups, UnifiedDataUploadDialog, AgentRulesDialog */
@@ -51,15 +51,15 @@ export const ViewBorderStyle: SxProps = { border: `1px solid ${borderColor.view}
 export const shadow = {
     /** Resting cards, chips
      *  ExplComponents, DataLoadingThread, DataThreadCards */
-    sm: '0 1px 2px rgba(0,0,0,0.05)',
+    sm: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
 
     /** Hovered cards, table headers
      *  DataThreadCards, SelectableDataGrid, DataLoadingThread hover */
-    md: '0 2px 4px rgba(0,0,0,0.08)',
+    md: '0 2px 6px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05)',
 
     /** Expanded items, hovered panels
      *  ExplComponents hover, ReportView compose toolbar */
-    lg: '0 2px 8px rgba(0,0,0,0.12)',
+    lg: '0 4px 12px rgba(0,0,0,0.09), 0 2px 4px rgba(0,0,0,0.06)',
 
     /** Floating overlays, dialogs, snackbars
      *  ReportView hover, DataFormulator overlay, MessageSnackbar */
@@ -112,11 +112,11 @@ export const conversationWidth = 640;
 export const radius = {
     /** Cards, chips, inputs, code blocks
      *  UnifiedDataUploadDialog, AgentRulesDialog, ChatDialog, ExplComponents */
-    sm: 1,
+    sm: 1.5,
 
     /** Floating panels, dialogs, chat cards, table containers
      *  DataThread popups, ChatDialog, About, DataLoadingChat, TableSelectionView */
-    md: 2,
+    md: 2.5,
 
     /** Status indicators, model icons
      *  ModelSelectionDialog status badges */

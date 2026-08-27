@@ -115,7 +115,7 @@ import { buttonVar, iconVar, textVar } from './layout';
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
     color: 'black',
     backgroundColor: "transparent",
-    //borderBottom: "1px solid #C3C3C3",
+    borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
     boxShadow: "none",
     transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.sharp,

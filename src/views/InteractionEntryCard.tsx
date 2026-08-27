@@ -21,7 +21,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { InteractionEntry } from '../components/ComponentType';
 import { AgentIcon } from '../icons';
-import { radius, borderColor } from '../app/tokens';
+import { radius, borderColor, shadow } from '../app/tokens';
 import { textVar } from '../app/layout';
 
 /** Pick the icon component for a step line based on known prefixes. */
@@ -289,13 +289,15 @@ export const InteractionEntryCard: React.FC<InteractionEntryCardProps> = memo(({
             <Box onClick={handleClick} sx={{
                 fontSize: textVar.xs,
                 color: theme.palette.text.primary,
-                py: 0.5, px: 1,
-                borderRadius: radius.sm,
+                py: 0.75, px: 1.25,
+                borderRadius: radius.md,
+                lineHeight: 1.55,
                 // Keep the user card visually weighted (full bgcolor tint) —
                 // user prompts/instructions are the anchors of the thread,
                 // so they should read stronger than the agent's bubbles.
                 backgroundColor: palette.bgcolor,
-                border: `1px solid ${borderColor.component}`,
+                border: `1px solid ${alpha(palette.main, 0.18)}`,
+                boxShadow: shadow.sm,
                 // Cap very long instructions (e.g. a replayed workflow) so the
                 // card stays compact; the full text scrolls within the cap.
                 maxHeight: 160,
