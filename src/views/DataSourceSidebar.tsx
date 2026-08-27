@@ -64,6 +64,7 @@ import SortIcon from '@mui/icons-material/Sort';
 import CheckIcon from '@mui/icons-material/Check';
 
 import { KnowledgePanel } from './KnowledgePanel';
+import { TeamCollabButton } from './TeamDialog';
 
 import { DataFormulatorState, dfActions, dfSelectors } from '../app/dfSlice';
 import { AppDispatch } from '../app/store';
@@ -357,6 +358,10 @@ export const DataSourceSidebar: React.FC<{
                         <LightbulbOutlinedIcon fontSize="small" />
                     </IconButton>
                 </Tooltip>
+                {/* 团队协作 — anchored at the bottom of the rail */}
+                <Box sx={{ mt: 'auto', pb: 1 }}>
+                    <TeamCollabButton />
+                </Box>
             </Box>
 
             {/* The expanded panel overlays the workspace instead of changing

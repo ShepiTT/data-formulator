@@ -311,7 +311,10 @@ def run_desktop() -> None:
                 os.environ["DATA_FORMULATOR_DESKTOP"] = "1"
                 from data_formulator.auth.azure_cli import expose_azure_cli
                 expose_azure_cli()
-                sys.argv = [sys.argv[0], "--host", "127.0.0.1", "--port", str(port)]
+                # Bind all interfaces so LAN teammates can reach the team
+                # endpoints; the desktop gate in app.py restricts everything
+                # else to localhost. Windows Firewall prompts once for this.
+                sys.argv = [sys.argv[0], "--host", "0.0.0.0", "--port", str(port)]
 
                 from data_formulator.app import run_app
 

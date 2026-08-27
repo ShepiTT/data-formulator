@@ -951,7 +951,7 @@ def list_data_loaders():
         # sample_datasets is a built-in, always-available admin connector with
         # nothing to configure — it's surfaced as a connected source elsewhere,
         # so there's no connection to "create". Hide it from the catalog.
-        if key == "sample_datasets":
+        if key in ("sample_datasets", "team_share"):
             continue
         # local_folder browses a folder on the host machine, so it only makes
         # sense in local mode — hide it in hosted/shared deployments.

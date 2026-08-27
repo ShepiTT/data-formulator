@@ -91,7 +91,7 @@ class DataLoadingSkill:
 
         connectors = []
         for key, loader_class in DATA_LOADERS.items():
-            if key == "sample_datasets":
+            if key in ("sample_datasets", "team_share"):
                 continue
             try:
                 auth_mode = loader_class.auth_mode()
@@ -180,7 +180,7 @@ class DataLoadingSkill:
         from data_formulator.data_loader import DATA_LOADERS, DISABLED_LOADERS
 
         source_type = str(spec.get("source_type") or "").strip()
-        if source_type not in DATA_LOADERS or source_type == "sample_datasets":
+        if source_type not in DATA_LOADERS or source_type in ("sample_datasets", "team_share"):
             hint = DISABLED_LOADERS.get(source_type)
             message = f"Connector {source_type!r} is unavailable" + (f" (needs: {hint})." if hint else ".")
             yield {"type": "error", "message": message, "message_code": "agent.invalidConnector"}

@@ -74,6 +74,7 @@ _LOADER_SPECS: list[tuple[str, str, str, str]] = [
     ("athena",     "data_formulator.data_loader.athena_data_loader",     "AthenaDataLoader",     "boto3"),
     ("superset",   "data_formulator.data_loader.superset_data_loader",   "SupersetLoader",       "requests"),
     ("local_folder", "data_formulator.data_loader.local_folder_data_loader", "LocalFolderDataLoader", "pyarrow"),
+    ("team_share", "data_formulator.data_loader.team_share_loader", "TeamShareDataLoader", "requests"),
 ]
 
 # ---------------------------------------------------------------------------
@@ -91,6 +92,13 @@ _BUILTIN_CATALOG_POLICIES: dict[str, CatalogCachePolicy] = {
         listing_ttl_seconds=0,
         metadata_ttl_seconds=0,
         refresh_cost="local",
+        automatic_refresh="while_connected",
+        minimum_retry_seconds=5,
+    ),
+    "team_share": CatalogCachePolicy(
+        listing_ttl_seconds=30,
+        metadata_ttl_seconds=300,
+        refresh_cost="cheap",
         automatic_refresh="while_connected",
         minimum_retry_seconds=5,
     ),

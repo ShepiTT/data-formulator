@@ -275,6 +275,7 @@ def _register_blueprints():
     from data_formulator.routes.logs import logs_bp
     from data_formulator.routes.model_endpoints import model_endpoints_bp
     from data_formulator.routes.user_models import user_models_bp
+    from data_formulator.routes.team import team_bp
 
     # Register blueprints
     app.register_blueprint(tables_bp)
@@ -284,6 +285,25 @@ def _register_blueprints():
     app.register_blueprint(logs_bp)
     app.register_blueprint(model_endpoints_bp)
     app.register_blueprint(user_models_bp)
+    app.register_blueprint(team_bp)
+
+    # Desktop LAN gate: the desktop app binds 0.0.0.0 so team members can
+    # reach it, but everything except the team surface stays local-only.
+    if os.environ.get("DATA_FORMULATOR_DESKTOP") == "1":
+        _TEAM_REMOTE_PREFIXES = (
+            "/api/team/join", "/api/team/files", "/api/team/models", "/api/team/v1/",
+        )
+
+        @app.before_request
+        def _desktop_lan_gate():
+            from flask import request as _req
+            remote = _req.remote_addr or ""
+            if remote in ("127.0.0.1", "::1"):
+                return None
+            if any(_req.path.startswith(p) for p in _TEAM_REMOTE_PREFIXES):
+                return None
+            from data_formulator.errors import AppError as _AppError, ErrorCode as _EC
+            raise _AppError(_EC.ACCESS_DENIED, "Remote access is limited to team endpoints")
 
     # Initialise pluggable authentication (reads AUTH_PROVIDER env var)
     from data_formulator.auth.identity import init_auth, get_active_provider

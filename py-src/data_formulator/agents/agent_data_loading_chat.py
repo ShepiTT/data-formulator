@@ -1897,7 +1897,7 @@ class DataLoadingAgent:
         connectors = []
         for key, loader_class in DATA_LOADERS.items():
             # local_folder / sample_datasets have dedicated UX, not a credential form.
-            if key in ("local_folder", "sample_datasets"):
+            if key in ("local_folder", "sample_datasets", "team_share"):
                 continue
             display_name = loader_class.DISPLAY_NAME or key.replace("_", " ").title()
             summary = loader_class.DESCRIPTION or display_name
@@ -1920,7 +1920,7 @@ class DataLoadingAgent:
                 "install_hint": hint,
             }
             for key, hint in DISABLED_LOADERS.items()
-            if key not in ("local_folder", "sample_datasets")
+            if key not in ("local_folder", "sample_datasets", "team_share")
         ]
 
         self._connectors_listed = True
@@ -2021,7 +2021,7 @@ class DataLoadingAgent:
             return {"error": (
                 f"Unknown connector '{source_type}'. Available: {available}."
             )}
-        if source_type in ("local_folder", "sample_datasets"):
+        if source_type in ("local_folder", "sample_datasets", "team_share"):
             return {"error": (
                 f"'{source_type}' does not use a credential form; it has its own flow."
             )}
